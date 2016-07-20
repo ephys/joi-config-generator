@@ -1,40 +1,83 @@
 import BaseBuilder from './BaseBuilder';
+import Symbols from './Symbols';
+import typeValidator from '../validators/TypeValidators';
+import StringUtil from '../util/StringUtil';
 
+/**
+ * @class ArrayBuilder
+ */
 export default class ArrayBuilder extends BaseBuilder {
 
   /**
-   * @return {!ArrayBuilder}
+   * Sets the minimum count of items to put in the array.
+   * @param {!number} itemCount
+   * @returns {!ArrayBuilder}
    */
-  ofString() {
-    return this;
-  }
-
-  ofDouble() {
-    return this;
-  }
-
-  ofInteger() {
-    return this;
-  }
-
-  ofBooleans() {
+  minItems(itemCount) {
+    this._min = itemCount;
     return this;
   }
 
   /**
-   * Adds validators function to the builder. The determine if the input is valid or not.
-   *
-   * Validator call order is undefined.
-   * The validity is determined by a logical AND on the output of each validators.
-   * For a logical OR on some validators, put these validators in the same array.
-   *
-   * @param {!(Array.<function>|function)} validators - The list of validators, each validator should return true if the input is valid, false otherwise.
-   * @example stringBuilder.addValidator([validator.string.url, validator.string.ip]) // Valid if it is an url _OR_ an IP
-   * @example stringBuilder.addValidator(validator.string.url, validator.string.ip) // Valid if it is an url _AND_ an IP (obviously the input would always be invalid).
-   *
-   * @return {!ArrayBuilder} this
+   * Sets the maximum count of items to put in the array.
+   * @param {!number} itemCount
+   * @returns {!ArrayBuilder}
    */
-  addItemValidator(...validators) {
+  maxItems(itemCount) {
+    this._max = itemCount;
     return this;
   }
-}
+
+  /**
+   * Adds a validator that will be run on each items of the array.
+   *
+   * @param {!function} validator
+   * @returns {!ArrayBuilder}
+   */
+  addItemValidator(validator) {
+    // TODO
+    return this;
+  }
+
+  async [Symbols.build](currentValue) {
+    // TODO
+    // Validate every item + Directly replace those incorrect (but allow their deletion)
+    // insert up to minimum length
+    // force stop at maximum length
+    // empty value = stop inserting (unless the minimum length hasn't been reached yet).
+
+    // Run array validators. If it does not pass, start over.
+    return [];
+  }
+};
+
+/**
+ * @method
+ * @name ArrayBuilder#ofStrings
+ * @returns {!ArrayBuilder}
+ * @public
+ */
+
+/**
+ * @method
+ * @name ArrayBuilder#ofBooleans
+ * @returns {!ArrayBuilder}
+ * @public
+ */
+
+/**
+ * @method
+ * @name ArrayBuilder#ofNumbers
+ * @returns {!ArrayBuilder}
+ * @public
+ */
+
+['string', 'number', 'boolean'].forEach(type => {
+  Object.defineProperty(ArrayBuilder.prototype, `of${StringUtil.capitalizeFirstLetter(type)}s`, {
+    value: function () {
+      return this.addItemValidator(typeValidator[type]);
+    }
+  });
+});
+
+

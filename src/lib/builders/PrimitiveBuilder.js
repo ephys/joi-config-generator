@@ -3,6 +3,7 @@ import Symbols from './Symbols';
 import io from '../io/io';
 import colors from 'cli-color';
 
+//TODO refactor
 export default class PrimitiveBuilder extends BaseBuilder {
 
   constructor(name, parent) {
@@ -46,8 +47,8 @@ export default class PrimitiveBuilder extends BaseBuilder {
    *
    * @returns {!PrimitiveBuilder} this
    */
-  nullable() {
-    this._nullable = true;
+  nullable(nullable = true) { // parameter is a hack for the alternative parameter set method
+    this._nullable = nullable;
     return this;
   }
 
@@ -87,6 +88,7 @@ export default class PrimitiveBuilder extends BaseBuilder {
   }
 
   [Symbols.getHints]() {
+    // TODO extract from validators.
     const hints = [];
 
     if (this._nullable) {

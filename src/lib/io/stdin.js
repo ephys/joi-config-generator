@@ -6,7 +6,7 @@ const rl = readline.createInterface({
 });
 
 export default {
-  readLine(question) {
+  async readLine(question) {
     return new Promise(resolve => rl.question(question + ': ', resolve));
   }
 };

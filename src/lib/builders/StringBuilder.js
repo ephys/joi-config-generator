@@ -1,44 +1,33 @@
 import PrimitiveBuilder from './PrimitiveBuilder';
-import Symbols from './Symbols';
+import TypeValidators from '../validators/TypeValidators';
 
 export default class StringBuilder extends PrimitiveBuilder {
 
-  minLength(length) {
-    this._min = length;
-    return this;
-  }
+  constructor(...args) {
+    super(...args);
 
-  maxLength(length) {
-    this._max = length;
-    return this;
+    this.addValidator(TypeValidators.string);
   }
 
   /**
-   * @param {!String} value
-   * @returns {!(boolean|string)}
+   * Sets the minimum length of the string.
+   *
+   * @param {!number} length
+   * @returns {!StringBuilder} this
    */
-  [Symbols.validate](value) {
-    const sup = super[Symbols.validate](value);
-    if (sup !== true) {
-      return sup;
-    }
+  minLength(length) {
+    //noinspection JSValidateTypes
+    return this.addValidator(value => value.length >= length);
+  }
 
-    if (value === null) {
-      return true;
-    }
-
-    if (typeof value !== 'string') {
-      return 'Not a string';
-    }
-
-    if (this._min !== void 0 && value.length < this._min) {
-      return `Length (${value}) is below minimum value ${this._min}`;
-    }
-
-    if (this._max !== void 0 && value.length > this._max) {
-      return `Length (${value}) is above maximum value ${this._max}`;
-    }
-
-    return true;
+  /**
+   * Sets the maximum length of the string.
+   *
+   * @param {!number} length
+   * @returns {!StringBuilder} this
+   */
+  maxLength(length) {
+    //noinspection JSValidateTypes
+    return this.addValidator(value => value.length <= length);
   }
 }

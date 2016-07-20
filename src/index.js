@@ -1,8 +1,9 @@
 import regeneratorRuntime from 'regenerator-runtime';
 
 import ConfigBuilder from './lib/builders/ConfigBuilder';
-import stringValidators from './lib/validators/string';
-import numberValidators from './lib/validators/number';
+import stringValidators from './lib/validators/StringValidators';
+import numberValidators from './lib/validators/NumberValidators';
+import typeValidators from './lib/validators/TypeValidators';
 
 global.regeneratorRuntime = regeneratorRuntime;
 
@@ -18,5 +19,6 @@ export default function(filePath) {
 
 export const validator = {
   string: stringValidators,
-  number: numberValidators
+  number: numberValidators,
+  type: typeValidators
 };

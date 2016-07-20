@@ -1,7 +1,11 @@
 import Symbols from './Symbols';
-import io from '../io/io';
 
 export default class BaseBuilder {
+
+  /**
+   * @param {!String} name
+   * @param {!ObjectBuilder} parent
+   */
   constructor(name, parent) {
     this._name = name;
     this._parent = parent;
@@ -11,7 +15,7 @@ export default class BaseBuilder {
    * Finalizes the current builder and gives control back to the parent.
    * @returns {!BaseBuilder}
    */
-  done() {
+  endObject() {
     if (this._parent && this._parent._parent) {
       return this._parent._parent;
     }
@@ -27,50 +31,55 @@ export default class BaseBuilder {
    * Adds an object property to the current object.
    *
    * @param {!String} name - The name of the property.
+   * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
    * @returns {!ObjectBuilder} The property builder.
    */
-  addObject(name) {
-    return this._getParent().addObject(name);
+  addObject(name, properties) {
+    return this._getParent().addObject(name, properties);
   }
 
   /**
    * Adds an Array property to the current object.
    *
    * @param {!String} name - The name of the property.
+   * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
    * @returns {!ArrayBuilder} The property builder.
    */
-  addArray(name) {
-    return this._getParent().addArray(name);
+  addArray(name, properties) {
+    return this._getParent().addArray(name, properties);
   }
 
   /**
    * Adds a String property to the current object.
    *
    * @param {!String} name - The name of the property.
+   * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
    * @returns {!StringBuilder}
    */
-  addString(name) {
-    return this._getParent().addString(name);
+  addString(name, properties) {
+    return this._getParent().addString(name, properties);
   }
 
   /**
    * Adds a Number property to the current object.
    *
    * @param {!String} name - The name of the property.
+   * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
    * @returns {!NumberBuilder} The property builder.
    */
-  addNumber(name) {
-    return this._getParent().addNumber(name);
+  addNumber(name, properties) {
+    return this._getParent().addNumber(name, properties);
   }
 
   /**
    * Adds a Boolean property to the current object.
    *
    * @param {!String} name - The name of the property.
+   * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
    * @returns {!BooleanBuilder} The property builder.
    */
-  addBoolean(name) {
-    return this._getParent().addBoolean(name);
+  addBoolean(name, properties) {
+    return this._getParent().addBoolean(name, properties);
   }
 
   /**

@@ -81,3 +81,10 @@ var ConfigBuilder = function (_ObjectBuilder) {
 }(_ObjectBuilder3.default);
 
 exports.default = ConfigBuilder;
+
+
+Object.defineProperty(ConfigBuilder.prototype, _ObjectBuilder2.ObjectBuilderSymbols.separator, {
+  value: ' ',
+  writable: false,
+  enumerable: false
+});

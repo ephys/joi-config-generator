@@ -6,15 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === void 0) { var parent = Object.getPrototypeOf(object); if (parent === null) { return void 0; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === void 0) { return void 0; } return getter.call(receiver); } };
-
 var _PrimitiveBuilder2 = require('./PrimitiveBuilder');
 
 var _PrimitiveBuilder3 = _interopRequireDefault(_PrimitiveBuilder2);
 
-var _Symbols = require('./Symbols');
+var _TypeValidators = require('../validators/TypeValidators');
 
-var _Symbols2 = _interopRequireDefault(_Symbols);
+var _TypeValidators2 = _interopRequireDefault(_TypeValidators);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28,54 +26,51 @@ var StringBuilder = function (_PrimitiveBuilder) {
   _inherits(StringBuilder, _PrimitiveBuilder);
 
   function StringBuilder() {
+    var _Object$getPrototypeO;
+
     _classCallCheck(this, StringBuilder);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(StringBuilder).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var _this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(StringBuilder)).call.apply(_Object$getPrototypeO, [this].concat(args)));
+
+    _this.addValidator(_TypeValidators2.default.string);
+    return _this;
   }
+
+  /**
+   * Sets the minimum length of the string.
+   *
+   * @param {!number} length
+   * @returns {!StringBuilder} this
+   */
+
 
   _createClass(StringBuilder, [{
     key: 'minLength',
     value: function minLength(length) {
-      this._min = length;
-      return this;
-    }
-  }, {
-    key: 'maxLength',
-    value: function maxLength(length) {
-      this._max = length;
-      return this;
+      //noinspection JSValidateTypes
+      return this.addValidator(function (value) {
+        return value.length >= length;
+      });
     }
 
     /**
-     * @param {!String} value
-     * @returns {!(boolean|string)}
+     * Sets the maximum length of the string.
+     *
+     * @param {!number} length
+     * @returns {!StringBuilder} this
      */
 
   }, {
-    key: _Symbols2.default.validate,
-    value: function value(_value) {
-      var sup = _get(Object.getPrototypeOf(StringBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
-      if (sup !== true) {
-        return sup;
-      }
-
-      if (_value === null) {
-        return true;
-      }
-
-      if (typeof _value !== 'string') {
-        return 'Not a string';
-      }
-
-      if (this._min !== void 0 && _value.length < this._min) {
-        return 'Length (' + _value + ') is below minimum value ' + this._min;
-      }
-
-      if (this._max !== void 0 && _value.length > this._max) {
-        return 'Length (' + _value + ') is above maximum value ' + this._max;
-      }
-
-      return true;
+    key: 'maxLength',
+    value: function maxLength(length) {
+      //noinspection JSValidateTypes
+      return this.addValidator(function (value) {
+        return value.length <= length;
+      });
     }
   }]);
 

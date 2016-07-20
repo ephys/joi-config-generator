@@ -1,6 +1,7 @@
 import ObjectBuilder from './ObjectBuilder';
 import Symbols from './Symbols';
 import io from '../io/io';
+import { ObjectBuilderSymbols } from './ObjectBuilder';
 
 export default class ConfigBuilder extends ObjectBuilder {
 
@@ -26,3 +27,9 @@ export default class ConfigBuilder extends ObjectBuilder {
     return callback(newConfig);
   }
 }
+
+Object.defineProperty(ConfigBuilder.prototype, ObjectBuilderSymbols.separator, {
+  value: ' ',
+  writable: false,
+  enumerable: false
+});

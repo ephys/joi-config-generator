@@ -10,6 +10,18 @@ var _BaseBuilder2 = require('./BaseBuilder');
 
 var _BaseBuilder3 = _interopRequireDefault(_BaseBuilder2);
 
+var _Symbols = require('./Symbols');
+
+var _Symbols2 = _interopRequireDefault(_Symbols);
+
+var _TypeValidators = require('../validators/TypeValidators');
+
+var _TypeValidators2 = _interopRequireDefault(_TypeValidators);
+
+var _StringUtil = require('../util/StringUtil');
+
+var _StringUtil2 = _interopRequireDefault(_StringUtil);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -18,6 +30,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * @class ArrayBuilder
+ */
 var ArrayBuilder = function (_BaseBuilder) {
   _inherits(ArrayBuilder, _BaseBuilder);
 
@@ -28,49 +43,60 @@ var ArrayBuilder = function (_BaseBuilder) {
   }
 
   _createClass(ArrayBuilder, [{
-    key: 'ofString',
+    key: 'minItems',
 
 
     /**
-     * @return {!ArrayBuilder}
+     * Sets the minimum count of items to put in the array.
+     * @param {!number} itemCount
+     * @returns {!ArrayBuilder}
      */
-    value: function ofString() {
-      return this;
-    }
-  }, {
-    key: 'ofDouble',
-    value: function ofDouble() {
-      return this;
-    }
-  }, {
-    key: 'ofInteger',
-    value: function ofInteger() {
-      return this;
-    }
-  }, {
-    key: 'ofBooleans',
-    value: function ofBooleans() {
+    value: function minItems(itemCount) {
+      this._min = itemCount;
       return this;
     }
 
     /**
-     * Adds validators function to the builder. The determine if the input is valid or not.
+     * Sets the maximum count of items to put in the array.
+     * @param {!number} itemCount
+     * @returns {!ArrayBuilder}
+     */
+
+  }, {
+    key: 'maxItems',
+    value: function maxItems(itemCount) {
+      this._max = itemCount;
+      return this;
+    }
+
+    /**
+     * Adds a validator that will be run on each items of the array.
      *
-     * Validator call order is undefined.
-     * The validity is determined by a logical AND on the output of each validators.
-     * For a logical OR on some validators, put these validators in the same array.
-     *
-     * @param {!(Array.<function>|function)} validators - The list of validators, each validator should return true if the input is valid, false otherwise.
-     * @example stringBuilder.addValidator([validator.string.url, validator.string.ip]) // Valid if it is an url _OR_ an IP
-     * @example stringBuilder.addValidator(validator.string.url, validator.string.ip) // Valid if it is an url _AND_ an IP (obviously the input would always be invalid).
-     *
-     * @return {!ArrayBuilder} this
+     * @param {!function} validator
+     * @returns {!ArrayBuilder}
      */
 
   }, {
     key: 'addItemValidator',
-    value: function addItemValidator() {
+    value: function addItemValidator(validator) {
+      // TODO
       return this;
+    }
+  }, {
+    key: _Symbols2.default.build,
+    value: function value(currentValue) {
+      return regeneratorRuntime.async(function value$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              return _context.abrupt('return', []);
+
+            case 1:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, null, this);
     }
   }]);
 
@@ -78,3 +104,33 @@ var ArrayBuilder = function (_BaseBuilder) {
 }(_BaseBuilder3.default);
 
 exports.default = ArrayBuilder;
+;
+
+/**
+ * @method
+ * @name ArrayBuilder#ofStrings
+ * @returns {!ArrayBuilder}
+ * @public
+ */
+
+/**
+ * @method
+ * @name ArrayBuilder#ofBooleans
+ * @returns {!ArrayBuilder}
+ * @public
+ */
+
+/**
+ * @method
+ * @name ArrayBuilder#ofNumbers
+ * @returns {!ArrayBuilder}
+ * @public
+ */
+
+['string', 'number', 'boolean'].forEach(function (type) {
+  Object.defineProperty(ArrayBuilder.prototype, 'of' + _StringUtil2.default.capitalizeFirstLetter(type) + 's', {
+    value: function value() {
+      return this.addItemValidator(_TypeValidators2.default[type]);
+    }
+  });
+});

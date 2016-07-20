@@ -10,15 +10,16 @@ var _Symbols = require('./Symbols');
 
 var _Symbols2 = _interopRequireDefault(_Symbols);
 
-var _io = require('../io/io');
-
-var _io2 = _interopRequireDefault(_io);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var BaseBuilder = function () {
+
+  /**
+   * @param {!String} name
+   * @param {!ObjectBuilder} parent
+   */
   function BaseBuilder(name, parent) {
     _classCallCheck(this, BaseBuilder);
 
@@ -33,8 +34,8 @@ var BaseBuilder = function () {
 
 
   _createClass(BaseBuilder, [{
-    key: 'done',
-    value: function done() {
+    key: 'endObject',
+    value: function endObject() {
       if (this._parent && this._parent._parent) {
         return this._parent._parent;
       }
@@ -53,65 +54,70 @@ var BaseBuilder = function () {
      * Adds an object property to the current object.
      *
      * @param {!String} name - The name of the property.
+     * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!ObjectBuilder} The property builder.
      */
 
   }, {
     key: 'addObject',
-    value: function addObject(name) {
-      return this._getParent().addObject(name);
+    value: function addObject(name, properties) {
+      return this._getParent().addObject(name, properties);
     }
 
     /**
      * Adds an Array property to the current object.
      *
      * @param {!String} name - The name of the property.
+     * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!ArrayBuilder} The property builder.
      */
 
   }, {
     key: 'addArray',
-    value: function addArray(name) {
-      return this._getParent().addArray(name);
+    value: function addArray(name, properties) {
+      return this._getParent().addArray(name, properties);
     }
 
     /**
      * Adds a String property to the current object.
      *
      * @param {!String} name - The name of the property.
+     * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!StringBuilder}
      */
 
   }, {
     key: 'addString',
-    value: function addString(name) {
-      return this._getParent().addString(name);
+    value: function addString(name, properties) {
+      return this._getParent().addString(name, properties);
     }
 
     /**
      * Adds a Number property to the current object.
      *
      * @param {!String} name - The name of the property.
+     * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!NumberBuilder} The property builder.
      */
 
   }, {
     key: 'addNumber',
-    value: function addNumber(name) {
-      return this._getParent().addNumber(name);
+    value: function addNumber(name, properties) {
+      return this._getParent().addNumber(name, properties);
     }
 
     /**
      * Adds a Boolean property to the current object.
      *
      * @param {!String} name - The name of the property.
+     * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!BooleanBuilder} The property builder.
      */
 
   }, {
     key: 'addBoolean',
-    value: function addBoolean(name) {
-      return this._getParent().addBoolean(name);
+    value: function addBoolean(name, properties) {
+      return this._getParent().addBoolean(name, properties);
     }
 
     /**

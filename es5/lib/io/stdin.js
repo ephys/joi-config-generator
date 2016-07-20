@@ -17,8 +17,19 @@ var rl = _readline2.default.createInterface({
 
 exports.default = {
   readLine: function readLine(question) {
-    return new Promise(function (resolve) {
-      return rl.question(question + ': ', resolve);
-    });
+    return regeneratorRuntime.async(function readLine$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            return _context.abrupt('return', new Promise(function (resolve) {
+              return rl.question(question + ': ', resolve);
+            }));
+
+          case 1:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, null, this);
   }
 };

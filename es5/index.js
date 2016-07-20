@@ -17,13 +17,17 @@ var _ConfigBuilder = require('./lib/builders/ConfigBuilder');
 
 var _ConfigBuilder2 = _interopRequireDefault(_ConfigBuilder);
 
-var _string = require('./lib/validators/string');
+var _StringValidators = require('./lib/validators/StringValidators');
 
-var _string2 = _interopRequireDefault(_string);
+var _StringValidators2 = _interopRequireDefault(_StringValidators);
 
-var _number = require('./lib/validators/number');
+var _NumberValidators = require('./lib/validators/NumberValidators');
 
-var _number2 = _interopRequireDefault(_number);
+var _NumberValidators2 = _interopRequireDefault(_NumberValidators);
+
+var _TypeValidators = require('./lib/validators/TypeValidators');
+
+var _TypeValidators2 = _interopRequireDefault(_TypeValidators);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,6 +40,7 @@ global.regeneratorRuntime = _regeneratorRuntime2.default;
  * @return {!ConfigBuilder}
  */
 var validator = exports.validator = {
-  string: _string2.default,
-  number: _number2.default
+  string: _StringValidators2.default,
+  number: _NumberValidators2.default,
+  type: _TypeValidators2.default
 };
