@@ -1,12 +1,10 @@
 import BaseBuilder from './BaseBuilder';
 import Symbols from './Symbols';
-import io from '../io';
+import io from '../io/io';
+import colors from 'cli-color';
 
 export default class PrimitiveBuilder extends BaseBuilder {
 
-  /**
-   * @param {!ObjectBuilder} parent
-   */
   constructor(name, parent) {
     super(name, parent);
 
@@ -35,17 +33,18 @@ export default class PrimitiveBuilder extends BaseBuilder {
    * Sets the default value of this primitive.
    *
    * @param {!*} value - The default value.
-   * @returns {!PrimitiveBuilder}
+   * @returns {!PrimitiveBuilder} this
    */
   defaultValue(value) {
     this._defaultValue = value;
+
     return this;
   }
 
   /**
    * Marks this property as accepting the value "null".
    *
-   * @returns {!PrimitiveBuilder}
+   * @returns {!PrimitiveBuilder} this
    */
   nullable() {
     this._nullable = true;
@@ -53,25 +52,70 @@ export default class PrimitiveBuilder extends BaseBuilder {
   }
 
   async [Symbols.build](currentValue) {
-    if (this[Symbols.validate](currentValue)) {
+    const validation = this[Symbols.validate](currentValue);
+    if (validation === true) {
       return currentValue;
     }
 
-    const message = this._description || 'Please enter a value';
+    if (currentValue !== void 0) {
+      console.info(`The current value for "${this._name}" (${colors.yellow(JSON.stringify(currentValue))}) failed constraint validation (${validation}). Please enter a new value.`);
+    }
 
-    return io.getValue(this._description, val => this[Symbols.validate](val));
+    const hints = this[Symbols.getHints]();
+
+    const description = this._description ? ` - ${colors.cyan(this._description)}` : '';
+    const hintText = hints.length > 0 ? colors.magenta(` (${hints.join(', ')})`) : '';
+    const message = colors.cyan(this._name) + description + hintText;
+
+    const value = await io.getValue(message, val => {
+      if (val === void 0) {
+        if (this._defaultValue === void 0) {
+          return 'No default value.';
+        }
+
+        return true;
+      }
+
+      return this[Symbols.validate](val);
+    });
+
+    if (value === void 0) {
+      return this._defaultValue;
+    }
+
+    return value;
+  }
+
+  [Symbols.getHints]() {
+    const hints = [];
+
+    if (this._nullable) {
+      hints.push('Nullable');
+    } else {
+      hints.push('Not Null');
+    }
+
+    if (this._defaultValue) {
+      hints.push(`Default: ${JSON.stringify(this._defaultValue)}`);
+    }
+
+    return hints;
   }
 
   [Symbols.validate](value) {
-    if (value === void 0) {
-      return false;
-    }
-
     if (value === null) {
-      return this._nullable;
+      if (this._nullable) {
+        return true;
+      } else {
+        return 'Cannot be null';
+      }
     }
 
-    return _checkValidatorsAnd(this._validators, value);
+    if (!_checkValidatorsAnd(this._validators, value)) {
+      return 'Validator check failed';
+    }
+
+    return true;
   }
 }
 

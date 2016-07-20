@@ -6,6 +6,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Symbols = require('./Symbols');
+
+var _Symbols2 = _interopRequireDefault(_Symbols);
+
+var _io = require('../io/io');
+
+var _io2 = _interopRequireDefault(_io);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var BaseBuilder = function () {
@@ -82,7 +92,7 @@ var BaseBuilder = function () {
      * Adds a Number property to the current object.
      *
      * @param {!String} name - The name of the property.
-     * @returns {!NumberBuilder}
+     * @returns {!NumberBuilder} The property builder.
      */
 
   }, {
@@ -95,7 +105,7 @@ var BaseBuilder = function () {
      * Adds a Boolean property to the current object.
      *
      * @param {!String} name - The name of the property.
-     * @returns {!BooleanBuilder}
+     * @returns {!BooleanBuilder} The property builder.
      */
 
   }, {
@@ -103,11 +113,35 @@ var BaseBuilder = function () {
     value: function addBoolean(name) {
       return this._getParent().addBoolean(name);
     }
+
+    /**
+     * Sets the description of the property.
+     *
+     * @param {!String} description - The property description.
+     * @returns {!BaseBuilder} this
+     */
+
   }, {
     key: 'description',
     value: function description(_description) {
       this._description = _description;
       return this;
+    }
+  }, {
+    key: _Symbols2.default.build,
+    value: function value() {
+      return regeneratorRuntime.async(function value$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              throw new Error('Builder not implemented');
+
+            case 1:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, null, this);
     }
 
     /**

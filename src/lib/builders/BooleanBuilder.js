@@ -4,6 +4,19 @@ import Symbols from './Symbols';
 export default class BooleanBuilder extends PrimitiveBuilder {
 
   [Symbols.validate](value) {
-    return typeof value === 'boolean' && super[Symbols.validate](value);
+    const sup = super[Symbols.validate](value);
+    if (sup !== true) {
+      return sup;
+    }
+
+    if (value === null) {
+      return true;
+    }
+
+    if (typeof value !== 'boolean') {
+      return 'Not a boolean. (true/false)';
+    }
+
+    return true;
   }
 }

@@ -55,6 +55,7 @@ export default class ObjectBuilder extends BaseBuilder {
   _add(name, Builder) {
     this._checkName(name);
 
+    // TODO if name is not URLFriendly, JSON.stringify it
     const propertyBuilder = new Builder(`${this._name}.${name}`, this);
     this._properties.set(name, propertyBuilder);
 
@@ -77,7 +78,6 @@ export default class ObjectBuilder extends BaseBuilder {
   }
 
   async [Symbols.build](config = {}) {
-    console.log('Building object ' + this._name);
     const newConfig = {};
 
     for (const [propertyName, propertyBuilder] of this._properties) {

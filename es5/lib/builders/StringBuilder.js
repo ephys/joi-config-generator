@@ -48,27 +48,34 @@ var StringBuilder = function (_PrimitiveBuilder) {
 
     /**
      * @param {!String} value
-     * @returns {boolean}
+     * @returns {!(boolean|string)}
      */
 
   }, {
     key: _Symbols2.default.validate,
     value: function value(_value) {
-      if (typeof _value !== 'number') {
-        return false;
+      var sup = _get(Object.getPrototypeOf(StringBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
+      if (sup !== true) {
+        return sup;
       }
 
-      var sup = _get(Object.getPrototypeOf(StringBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
+      if (_value === null) {
+        return true;
+      }
 
-      if (!sup) {
-        return false;
+      if (typeof _value !== 'string') {
+        return 'Not a string';
       }
 
       if (this._min !== void 0 && _value.length < this._min) {
-        return false;
+        return 'Length (' + _value + ') is below minimum value ' + this._min;
       }
 
-      return !(this._max !== void 0 && _value.length > this._max);
+      if (this._max !== void 0 && _value.length > this._max) {
+        return 'Length (' + _value + ') is above maximum value ' + this._max;
+      }
+
+      return true;
     }
   }]);
 

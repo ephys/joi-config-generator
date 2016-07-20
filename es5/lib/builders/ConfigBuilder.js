@@ -14,7 +14,7 @@ var _Symbols = require('./Symbols');
 
 var _Symbols2 = _interopRequireDefault(_Symbols);
 
-var _io = require('../io');
+var _io = require('../io/io');
 
 var _io2 = _interopRequireDefault(_io);
 
@@ -35,7 +35,7 @@ var ConfigBuilder = function (_ObjectBuilder) {
   function ConfigBuilder(filePath) {
     _classCallCheck(this, ConfigBuilder);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ConfigBuilder).call(this, '<' + filePath + '>'));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ConfigBuilder).call(this, '[' + filePath + ']'));
 
     _this._filePath = filePath;
     return _this;
@@ -49,15 +49,18 @@ var ConfigBuilder = function (_ObjectBuilder) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              console.log('Checking config setup.');
+              console.log();
+
+              _context.next = 4;
               return regeneratorRuntime.awrap(_io2.default.readConfig(this._filePath));
 
-            case 2:
+            case 4:
               config = _context.sent;
-              _context.next = 5;
+              _context.next = 7;
               return regeneratorRuntime.awrap(this[_Symbols2.default.build](config));
 
-            case 5:
+            case 7:
               newConfig = _context.sent;
 
 
@@ -65,7 +68,7 @@ var ConfigBuilder = function (_ObjectBuilder) {
 
               return _context.abrupt('return', callback(newConfig));
 
-            case 8:
+            case 10:
             case 'end':
               return _context.stop();
           }

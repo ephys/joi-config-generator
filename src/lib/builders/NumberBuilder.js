@@ -34,20 +34,27 @@ export default class NumberBuilder extends PrimitiveBuilder {
   }
 
   [Symbols.validate](value) {
-    if (typeof value !== 'number') {
-      return false;
+    const sup = super[Symbols.validate](value);
+    if (sup !== true) {
+      return sup;
     }
 
-    const sup = super[Symbols.validate](value);
+    if (value === null) {
+      return true;
+    }
 
-    if (!sup) {
-      return false;
+    if (typeof value !== 'number') {
+      return 'Not a number';
     }
 
     if (this._min !== void 0 && value < this._min) {
-      return false;
+      return `${value} is below minimum value ${this._min}`;
     }
 
-    return !(this._max !== void 0 && value > this._max);
+    if (this._max !== void 0 && value > this._max) {
+      return `${value} is above maximum value ${this._max}`;
+    }
+
+    return true;
   }
 }

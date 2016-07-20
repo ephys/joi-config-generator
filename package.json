@@ -23,8 +23,9 @@
     "run-sequence": "^1.2.2"
   },
   "dependencies": {
+    "cli-color": "^1.1.0",
     "fs-promise": "^0.5.0",
-    "regenerator-runtime": "latest",
-    "get-stdin": "latest"
+    "read-input": "^0.3.1",
+    "regenerator-runtime": "latest"
   }
 }

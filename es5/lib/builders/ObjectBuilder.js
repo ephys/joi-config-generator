@@ -111,6 +111,7 @@ var ObjectBuilder = function (_BaseBuilder) {
     value: function _add(name, Builder) {
       this._checkName(name);
 
+      // TODO if name is not URLFriendly, JSON.stringify it
       var propertyBuilder = new Builder(this._name + '.' + name, this);
       this._properties.set(name, propertyBuilder);
 
@@ -145,17 +146,16 @@ var ObjectBuilder = function (_BaseBuilder) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              console.log('Building object ' + this._name);
               newConfig = {};
               _iteratorNormalCompletion = true;
               _didIteratorError = false;
               _iteratorError = void 0;
-              _context.prev = 5;
+              _context.prev = 4;
               _iterator = this._properties[Symbol.iterator]();
 
-            case 7:
+            case 6:
               if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                _context.next = 18;
+                _context.next = 17;
                 break;
               }
 
@@ -163,60 +163,60 @@ var ObjectBuilder = function (_BaseBuilder) {
               propertyName = _step$value[0];
               propertyBuilder = _step$value[1];
               currentValue = config[propertyName];
-              _context.next = 14;
+              _context.next = 13;
               return regeneratorRuntime.awrap(propertyBuilder[_Symbols2.default.build](currentValue));
 
-            case 14:
+            case 13:
               newConfig[propertyName] = _context.sent;
 
-            case 15:
+            case 14:
               _iteratorNormalCompletion = true;
-              _context.next = 7;
+              _context.next = 6;
               break;
 
-            case 18:
-              _context.next = 24;
+            case 17:
+              _context.next = 23;
               break;
 
-            case 20:
-              _context.prev = 20;
-              _context.t0 = _context['catch'](5);
+            case 19:
+              _context.prev = 19;
+              _context.t0 = _context['catch'](4);
               _didIteratorError = true;
               _iteratorError = _context.t0;
 
-            case 24:
+            case 23:
+              _context.prev = 23;
               _context.prev = 24;
-              _context.prev = 25;
 
               if (!_iteratorNormalCompletion && _iterator.return) {
                 _iterator.return();
               }
 
-            case 27:
-              _context.prev = 27;
+            case 26:
+              _context.prev = 26;
 
               if (!_didIteratorError) {
-                _context.next = 30;
+                _context.next = 29;
                 break;
               }
 
               throw _iteratorError;
 
+            case 29:
+              return _context.finish(26);
+
             case 30:
-              return _context.finish(27);
+              return _context.finish(23);
 
             case 31:
-              return _context.finish(24);
-
-            case 32:
               return _context.abrupt('return', newConfig);
 
-            case 33:
+            case 32:
             case 'end':
               return _context.stop();
           }
         }
-      }, null, this, [[5, 20, 24, 32], [25,, 27, 31]]);
+      }, null, this, [[4, 19, 23, 31], [24,, 26, 30]]);
     }
   }]);
 

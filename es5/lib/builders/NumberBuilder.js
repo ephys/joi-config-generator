@@ -78,21 +78,28 @@ var NumberBuilder = function (_PrimitiveBuilder) {
   }, {
     key: _Symbols2.default.validate,
     value: function value(_value) {
-      if (typeof _value !== 'number') {
-        return false;
+      var sup = _get(Object.getPrototypeOf(NumberBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
+      if (sup !== true) {
+        return sup;
       }
 
-      var sup = _get(Object.getPrototypeOf(NumberBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
+      if (_value === null) {
+        return true;
+      }
 
-      if (!sup) {
-        return false;
+      if (typeof _value !== 'number') {
+        return 'Not a number';
       }
 
       if (this._min !== void 0 && _value < this._min) {
-        return false;
+        return _value + ' is below minimum value ' + this._min;
       }
 
-      return !(this._max !== void 0 && _value > this._max);
+      if (this._max !== void 0 && _value > this._max) {
+        return _value + ' is above maximum value ' + this._max;
+      }
+
+      return true;
     }
   }]);
 

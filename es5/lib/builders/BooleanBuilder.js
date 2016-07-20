@@ -36,7 +36,20 @@ var BooleanBuilder = function (_PrimitiveBuilder) {
   _createClass(BooleanBuilder, [{
     key: _Symbols2.default.validate,
     value: function value(_value) {
-      return typeof _value === 'boolean' && _get(Object.getPrototypeOf(BooleanBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
+      var sup = _get(Object.getPrototypeOf(BooleanBuilder.prototype), _Symbols2.default.validate, this).call(this, _value);
+      if (sup !== true) {
+        return sup;
+      }
+
+      if (_value === null) {
+        return true;
+      }
+
+      if (typeof _value !== 'boolean') {
+        return 'Not a boolean. (true/false)';
+      }
+
+      return true;
     }
   }]);
 

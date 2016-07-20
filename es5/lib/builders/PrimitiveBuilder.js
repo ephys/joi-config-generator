@@ -14,9 +14,13 @@ var _Symbols = require('./Symbols');
 
 var _Symbols2 = _interopRequireDefault(_Symbols);
 
-var _io = require('../io');
+var _io = require('../io/io');
 
 var _io2 = _interopRequireDefault(_io);
+
+var _cliColor = require('cli-color');
+
+var _cliColor2 = _interopRequireDefault(_cliColor);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29,9 +33,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var PrimitiveBuilder = function (_BaseBuilder) {
   _inherits(PrimitiveBuilder, _BaseBuilder);
 
-  /**
-   * @param {!ObjectBuilder} parent
-   */
   function PrimitiveBuilder(name, parent) {
     _classCallCheck(this, PrimitiveBuilder);
 
@@ -71,20 +72,21 @@ var PrimitiveBuilder = function (_BaseBuilder) {
      * Sets the default value of this primitive.
      *
      * @param {!*} value - The default value.
-     * @returns {!PrimitiveBuilder}
+     * @returns {!PrimitiveBuilder} this
      */
 
   }, {
     key: 'defaultValue',
     value: function defaultValue(value) {
       this._defaultValue = value;
+
       return this;
     }
 
     /**
      * Marks this property as accepting the value "null".
      *
-     * @returns {!PrimitiveBuilder}
+     * @returns {!PrimitiveBuilder} this
      */
 
   }, {
@@ -98,25 +100,57 @@ var PrimitiveBuilder = function (_BaseBuilder) {
     value: function value(currentValue) {
       var _this2 = this;
 
-      var message;
+      var validation, hints, description, hintText, message, value;
       return regeneratorRuntime.async(function value$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!this[_Symbols2.default.validate](currentValue)) {
-                _context.next = 2;
+              validation = this[_Symbols2.default.validate](currentValue);
+
+              if (!(validation === true)) {
+                _context.next = 3;
                 break;
               }
 
               return _context.abrupt('return', currentValue);
 
-            case 2:
-              message = this._description || 'Please enter a value';
-              return _context.abrupt('return', _io2.default.getValue(this._description, function (val) {
+            case 3:
+
+              if (currentValue !== void 0) {
+                console.info('The current value for "' + this._name + '" (' + _cliColor2.default.yellow(JSON.stringify(currentValue)) + ') failed constraint validation (' + validation + '). Please enter a new value.');
+              }
+
+              hints = this[_Symbols2.default.getHints]();
+              description = this._description ? ' - ' + _cliColor2.default.cyan(this._description) : '';
+              hintText = hints.length > 0 ? _cliColor2.default.magenta(' (' + hints.join(', ') + ')') : '';
+              message = _cliColor2.default.cyan(this._name) + description + hintText;
+              _context.next = 10;
+              return regeneratorRuntime.awrap(_io2.default.getValue(message, function (val) {
+                if (val === void 0) {
+                  if (_this2._defaultValue === void 0) {
+                    return 'No default value.';
+                  }
+
+                  return true;
+                }
+
                 return _this2[_Symbols2.default.validate](val);
               }));
 
-            case 4:
+            case 10:
+              value = _context.sent;
+
+              if (!(value === void 0)) {
+                _context.next = 13;
+                break;
+              }
+
+              return _context.abrupt('return', this._defaultValue);
+
+            case 13:
+              return _context.abrupt('return', value);
+
+            case 14:
             case 'end':
               return _context.stop();
           }
@@ -124,17 +158,38 @@ var PrimitiveBuilder = function (_BaseBuilder) {
       }, null, this);
     }
   }, {
+    key: _Symbols2.default.getHints,
+    value: function value() {
+      var hints = [];
+
+      if (this._nullable) {
+        hints.push('Nullable');
+      } else {
+        hints.push('Not Null');
+      }
+
+      if (this._defaultValue) {
+        hints.push('Default: ' + JSON.stringify(this._defaultValue));
+      }
+
+      return hints;
+    }
+  }, {
     key: _Symbols2.default.validate,
     value: function value(_value) {
-      if (_value === void 0) {
-        return false;
-      }
-
       if (_value === null) {
-        return this._nullable;
+        if (this._nullable) {
+          return true;
+        } else {
+          return 'Cannot be null';
+        }
       }
 
-      return _checkValidatorsAnd(this._validators, _value);
+      if (!_checkValidatorsAnd(this._validators, _value)) {
+        return 'Validator check failed';
+      }
+
+      return true;
     }
   }]);
 

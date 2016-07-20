@@ -4,47 +4,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _fs2 = require('fs');
+var _fs = require('./fs');
 
-var _fs3 = _interopRequireDefault(_fs2);
+var _fs2 = _interopRequireDefault(_fs);
 
-var _fsPromise = require('fs-promise');
+var _stdin = require('./stdin');
 
-var _fsPromise2 = _interopRequireDefault(_fsPromise);
-
-var _getStdin = require('get-stdin');
-
-var _getStdin2 = _interopRequireDefault(_getStdin);
+var _stdin2 = _interopRequireDefault(_stdin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function stat(path) {
-  return new Promise(function (resolve, reject) {
-    _fs3.default.stat(path, function (err, response) {
-      if (err) {
-        if (err.code === 'ENOENT') {
-          return resolve(null);
-        }
-
-        return reject(err);
-      }
-
-      return resolve(response);
-    });
-  });
-}
-
-function readFile(filePath) {
-  return new Promise(function (resolve, reject) {
-    _fs3.default.readFile(filePath, function (err, response) {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(response);
-    });
-  });
-}
 
 exports.default = {
   readConfig: function readConfig(filePath) {
@@ -54,33 +22,38 @@ exports.default = {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return regeneratorRuntime.awrap(stat(filePath));
+            return regeneratorRuntime.awrap(_fs2.default.stat(filePath));
 
           case 2:
             fileStat = _context.sent;
 
             if (!(fileStat === null)) {
-              _context.next = 9;
+              _context.next = 7;
               break;
             }
 
-            _context.next = 6;
-            return regeneratorRuntime.awrap(_fsPromise2.default.writeFile(filePath, '{}'));
-
-          case 6:
             return _context.abrupt('return', {});
 
-          case 9:
+          case 7:
             if (!fileStat.isFile()) {
               _context.next = 20;
               break;
             }
 
-            _context.next = 12;
-            return regeneratorRuntime.awrap(readFile(filePath));
+            _context.next = 10;
+            return regeneratorRuntime.awrap(_fs2.default.readFile(filePath));
 
-          case 12:
+          case 10:
             contents = _context.sent;
+
+            if (!(contents.length === 0)) {
+              _context.next = 13;
+              break;
+            }
+
+            return _context.abrupt('return', {});
+
+          case 13:
             _context.prev = 13;
             return _context.abrupt('return', JSON.parse(contents));
 
@@ -104,7 +77,7 @@ exports.default = {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            return _context2.abrupt('return', _fsPromise2.default.writeFile(filepath, JSON.stringify(config)));
+            return _context2.abrupt('return', _fs2.default.writeFile(filepath, JSON.stringify(config)));
 
           case 1:
           case 'end':
@@ -114,21 +87,48 @@ exports.default = {
     }, null, this);
   },
   getValue: function getValue(question, validator) {
+    var rawData, parsedData, validation;
     return regeneratorRuntime.async(function getValue$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            console.info(question);
+            _context3.next = 2;
+            return regeneratorRuntime.awrap(_stdin2.default.readLine(question));
 
-            // TODO
+          case 2:
+            rawData = _context3.sent;
+            parsedData = void 0;
 
-            _context3.next = 3;
-            return regeneratorRuntime.awrap((0, _getStdin2.default)());
+            if (rawData === '') {
+              parsedData = void 0;
+            } else {
+              try {
+                parsedData = JSON.parse(rawData);
+              } catch (e) {
+                parsedData = rawData;
+              }
+            }
 
-          case 3:
-            return _context3.abrupt('return', _context3.sent);
+            validation = validator(parsedData);
 
-          case 4:
+            if (!(validation !== true)) {
+              _context3.next = 9;
+              break;
+            }
+
+            console.error('Invalid response \'' + rawData + '\': ' + (validation || 'Constraint violated.'));
+            return _context3.abrupt('continue', 10);
+
+          case 9:
+            return _context3.abrupt('return', parsedData);
+
+          case 10:
+            if (true) {
+              _context3.next = 0;
+              break;
+            }
+
+          case 11:
           case 'end':
             return _context3.stop();
         }

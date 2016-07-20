@@ -15,23 +15,30 @@ export default class StringBuilder extends PrimitiveBuilder {
 
   /**
    * @param {!String} value
-   * @returns {boolean}
+   * @returns {!(boolean|string)}
    */
   [Symbols.validate](value) {
-    if (typeof value !== 'number') {
-      return false;
+    const sup = super[Symbols.validate](value);
+    if (sup !== true) {
+      return sup;
     }
 
-    const sup = super[Symbols.validate](value);
+    if (value === null) {
+      return true;
+    }
 
-    if (!sup) {
-      return false;
+    if (typeof value !== 'string') {
+      return 'Not a string';
     }
 
     if (this._min !== void 0 && value.length < this._min) {
-      return false;
+      return `Length (${value}) is below minimum value ${this._min}`;
     }
 
-    return !(this._max !== void 0 && value.length > this._max);
+    if (this._max !== void 0 && value.length > this._max) {
+      return `Length (${value}) is above maximum value ${this._max}`;
+    }
+
+    return true;
   }
 }

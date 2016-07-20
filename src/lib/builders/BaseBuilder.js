@@ -1,5 +1,7 @@
-export default class BaseBuilder {
+import Symbols from './Symbols';
+import io from '../io/io';
 
+export default class BaseBuilder {
   constructor(name, parent) {
     this._name = name;
     this._parent = parent;
@@ -55,7 +57,7 @@ export default class BaseBuilder {
    * Adds a Number property to the current object.
    *
    * @param {!String} name - The name of the property.
-   * @returns {!NumberBuilder}
+   * @returns {!NumberBuilder} The property builder.
    */
   addNumber(name) {
     return this._getParent().addNumber(name);
@@ -65,15 +67,25 @@ export default class BaseBuilder {
    * Adds a Boolean property to the current object.
    *
    * @param {!String} name - The name of the property.
-   * @returns {!BooleanBuilder}
+   * @returns {!BooleanBuilder} The property builder.
    */
   addBoolean(name) {
     return this._getParent().addBoolean(name);
   }
 
+  /**
+   * Sets the description of the property.
+   *
+   * @param {!String} description - The property description.
+   * @returns {!BaseBuilder} this
+   */
   description(description) {
     this._description = description;
     return this;
+  }
+
+  async [Symbols.build]() {
+    throw new Error('Builder not implemented');
   }
 
   /**
