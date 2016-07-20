@@ -28,7 +28,7 @@ gulp.task('transpile-babel', function () {
 
 gulp.task('watch', function () {
   nodemon({
-    script: config.main,
+    script: 'es5/test.js',
     watch: [paths.es6],
     ext: 'js',
     tasks: ['transpile']
