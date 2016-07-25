@@ -1,13 +1,13 @@
 {
-  "name": "config-builder",
-  "version": "1.0.0",
-  "description": "",
+  "name": "json-config-generator",
+  "version": "0.0.1",
+  "description": "Generates and validates JSON configuration files from a programmable JavaScript definition.",
   "main": "es5/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Guylian Cox <guyliancox@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-plugin-syntax-async-functions": "^6.8.0",
@@ -27,5 +27,9 @@
     "fs-promise": "^0.5.0",
     "read-input": "^0.3.1",
     "regenerator-runtime": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foobarhq/json-config-generator"
   }
 }
