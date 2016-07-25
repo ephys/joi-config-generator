@@ -3,29 +3,28 @@ import stdin from './stdin';
 
 export default {
   async readConfig(filePath) {
-    const fileStat = await fs.stat(filePath);
-
-    if (fileStat === null) {
+    if (!await fs.fileExists(filePath)) {
       return {};
-    } else if (fileStat.isFile()) {
-      const contents = await fs.readFile(filePath);
-
-      if (contents.length === 0) {
-        return {};
-      }
-
-      try {
-        return JSON.parse(contents);
-      } catch (e) {
-        throw new Error(`File "${filePath}" already has content, which is not JSON.`);
-      }
     }
 
-    throw new Error(`File "${filePath}" is not a writable file.`);
+    const contents = await fs.readFile(filePath);
+
+    if (contents.length === 0) {
+      return {};
+    }
+
+    try {
+      return JSON.parse(contents);
+    } catch (e) {
+      throw new Error(`File "${filePath}" already has content, which is not JSON.`);
+    }
   },
 
   async writeConfig(filepath, config) {
-    await fs.ensureDirectoryExistence(filepath);
+    if (!await fs.fileExists(filepath)) {
+      await fs.ensureDirectoryExistence(filepath);
+    }
+
     return fs.writeFile(filepath, JSON.stringify(config));
   },
 

@@ -58,29 +58,38 @@ exports.default = {
         switch (_context.prev = _context.next) {
           case 0:
             dirname = path.dirname(filePath);
-            _context.next = 3;
-            return regeneratorRuntime.awrap(this.directoryExists(dirname));
 
-          case 3:
-            if (!_context.sent) {
-              _context.next = 5;
+            if (!(dirname === '.')) {
+              _context.next = 3;
               break;
             }
 
             return _context.abrupt('return', true);
 
+          case 3:
+            _context.next = 5;
+            return regeneratorRuntime.awrap(this.directoryExists(dirname));
+
           case 5:
-            _context.next = 7;
-            return regeneratorRuntime.awrap(this.ensureDirectoryExistence(dirname));
+            if (!_context.sent) {
+              _context.next = 7;
+              break;
+            }
+
+            return _context.abrupt('return', true);
 
           case 7:
             _context.next = 9;
-            return regeneratorRuntime.awrap(_fsPromise2.default.mkdir(dirname));
+            return regeneratorRuntime.awrap(this.ensureDirectoryExistence(dirname));
 
           case 9:
+            _context.next = 11;
+            return regeneratorRuntime.awrap(_fsPromise2.default.mkdir(dirname));
+
+          case 11:
             return _context.abrupt('return', true);
 
-          case 10:
+          case 12:
           case 'end':
             return _context.stop();
         }
@@ -88,27 +97,77 @@ exports.default = {
     }, null, this);
   },
   directoryExists: function directoryExists(path) {
+    var stat;
     return regeneratorRuntime.async(function directoryExists$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
-            return regeneratorRuntime.awrap(this.stat(path).isDirectory());
+            _context2.next = 2;
+            return regeneratorRuntime.awrap(this.stat(path));
 
-          case 3:
-            return _context2.abrupt('return', _context2.sent);
+          case 2:
+            stat = _context2.sent;
 
-          case 6:
-            _context2.prev = 6;
-            _context2.t0 = _context2['catch'](0);
+            if (!(stat === null)) {
+              _context2.next = 5;
+              break;
+            }
+
             return _context2.abrupt('return', false);
 
-          case 9:
+          case 5:
+            if (stat.isDirectory()) {
+              _context2.next = 7;
+              break;
+            }
+
+            throw new Error('Resource "' + path + '" exists but is not a directory.');
+
+          case 7:
+            return _context2.abrupt('return', true);
+
+          case 8:
           case 'end':
             return _context2.stop();
         }
       }
-    }, null, this, [[0, 6]]);
+    }, null, this);
+  },
+  fileExists: function fileExists(path) {
+    var stat;
+    return regeneratorRuntime.async(function fileExists$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return regeneratorRuntime.awrap(this.stat(path));
+
+          case 2:
+            stat = _context3.sent;
+
+            if (!(stat === null)) {
+              _context3.next = 5;
+              break;
+            }
+
+            return _context3.abrupt('return', false);
+
+          case 5:
+            if (stat.isFile()) {
+              _context3.next = 7;
+              break;
+            }
+
+            throw new Error('Resource "' + path + '" exists but is not a file.');
+
+          case 7:
+            return _context3.abrupt('return', true);
+
+          case 8:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, null, this);
   }
 };

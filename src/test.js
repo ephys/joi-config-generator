@@ -1,20 +1,41 @@
 import buildConfig, { validator } from './index';
 
-buildConfig('test/array.json')
-  .addObject('database')
-    .addArray('roles', {
-      minItems: 2,
-      maxItems: 10
-    })
-      .addString()
-      .addObject()
-        .addBoolean('test')
-      .end()
-    .end()
-  .end()
+const filename = `mmc/config/config_${process.env.NODE_ENV || 'production'}.json`;
 
-  .then(configObject => console.log('Config contents: ', configObject))
-  .catch(e => console.error(e));
+const configBuilder = buildConfig(filename)
+  .addBoolean('debug').nullable().defaultValue(null)
+  .addString('JWT_SECRET')
+  .addObject('database')
+    .addString('database')
+    .addString('username')
+    .addString('password')
+    .addObject('options')
+      .addString('dialect')
+      .addString('host')
+    .end()
+  .end();
+
+configBuilder.then(newConfig => {
+  console.log(newConfig);
+}).catch(e => {
+  console.log(e);
+});
+
+// buildConfig('test/array.json')
+//   .addObject('database')
+//     .addArray('roles', {
+//       minItems: 2,
+//       maxItems: 10
+//     })
+//       .addString()
+//       .addObject()
+//         .addBoolean('test')
+//       .end()
+//     .end()
+//   .end()
+//
+//   .then(configObject => console.log('Config contents: ', configObject))
+//   .catch(e => console.error(e));
 
 // buildConfig('test/database.json')
 //   .addObject('database')
