@@ -6,21 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _BaseBuilder2 = require('./BaseBuilder');
-
-var _BaseBuilder3 = _interopRequireDefault(_BaseBuilder2);
-
 var _Symbols = require('./Symbols');
 
 var _Symbols2 = _interopRequireDefault(_Symbols);
 
-var _TypeValidators = require('../validators/TypeValidators');
+var _ComplexBuilder2 = require('./abstract/ComplexBuilder');
 
-var _TypeValidators2 = _interopRequireDefault(_TypeValidators);
-
-var _StringUtil = require('../util/StringUtil');
-
-var _StringUtil2 = _interopRequireDefault(_StringUtil);
+var _ComplexBuilder3 = _interopRequireDefault(_ComplexBuilder2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32,25 +24,35 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * @class ArrayBuilder
+ * @extends ComplexBuilder
  */
-var ArrayBuilder = function (_BaseBuilder) {
-  _inherits(ArrayBuilder, _BaseBuilder);
+var ArrayBuilder = function (_ComplexBuilder) {
+  _inherits(ArrayBuilder, _ComplexBuilder);
 
   function ArrayBuilder() {
+    var _Object$getPrototypeO;
+
     _classCallCheck(this, ArrayBuilder);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(ArrayBuilder).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var _this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(ArrayBuilder)).call.apply(_Object$getPrototypeO, [this].concat(args)));
+
+    _this._properties = [];
+    return _this;
   }
+
+  /**
+   * Sets the minimum count of items to put in the array.
+   * @param {!number} itemCount
+   * @returns {!ArrayBuilder}
+   */
+
 
   _createClass(ArrayBuilder, [{
     key: 'minItems',
-
-
-    /**
-     * Sets the minimum count of items to put in the array.
-     * @param {!number} itemCount
-     * @returns {!ArrayBuilder}
-     */
     value: function minItems(itemCount) {
       this._min = itemCount;
       return this;
@@ -70,28 +72,90 @@ var ArrayBuilder = function (_BaseBuilder) {
     }
 
     /**
-     * Adds a validator that will be run on each items of the array.
-     *
-     * @param {!function} validator
-     * @returns {!ArrayBuilder}
+     * Adds a new property to the object
+     * @param {!String} name - The property name.
+     * @param {Object} builderProperties - The new property's own properties.
+     * @param {!Function} Builder - The property builder class.
+     * @returns {!Object} The property builder instance.
+     * @protected
      */
 
   }, {
-    key: 'addItemValidator',
-    value: function addItemValidator(validator) {
-      // TODO
-      return this;
+    key: '_addProperty',
+    value: function _addProperty(name, builderProperties, Builder) {
+      var propertyBuilder = new Builder(name, this);
+      this._properties.push(propertyBuilder);
+
+      this._setBuilderProperties(propertyBuilder, builderProperties);
+
+      return propertyBuilder;
     }
   }, {
     key: _Symbols2.default.build,
-    value: function value(currentValue) {
+    value: function value() {
+      var currentArray = arguments.length <= 0 || arguments[0] === void 0 ? [] : arguments[0];
+      var canSkipArray = arguments.length <= 1 || arguments[1] === void 0 ? false : arguments[1];
+      var i, propertyBuilder, canSkip, newValue;
       return regeneratorRuntime.async(function value$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              return _context.abrupt('return', []);
+              i = 0;
 
-            case 1:
+
+              console.info('Building array, leave blank to stop adding items.');
+              if (this._min) {
+                console.info('Minimum items in array: ' + this._min);
+              }
+
+              if (this._max) {
+                console.info('Maximum items in array: ' + this._max);
+              }
+
+            case 4:
+              if (!_isAboveMax(i, this._max)) {
+                _context.next = 6;
+                break;
+              }
+
+              return _context.abrupt('break', 18);
+
+            case 6:
+              propertyBuilder = this._properties[i % this._properties.length];
+
+              propertyBuilder.name(i);
+
+              canSkip = canSkipArray || _isAboveMin(i, this._min);
+              _context.next = 11;
+              return regeneratorRuntime.awrap(propertyBuilder[_Symbols2.default.build](currentArray[i], canSkip));
+
+            case 11:
+              newValue = _context.sent;
+
+              if (!(newValue === void 0)) {
+                _context.next = 15;
+                break;
+              }
+
+              // skipped
+              delete currentArray[i];
+              return _context.abrupt('break', 18);
+
+            case 15:
+
+              currentArray[i] = newValue;
+              i++;
+
+            case 17:
+              if (true) {
+                _context.next = 4;
+                break;
+              }
+
+            case 18:
+              return _context.abrupt('return', currentArray);
+
+            case 19:
             case 'end':
               return _context.stop();
           }
@@ -101,36 +165,23 @@ var ArrayBuilder = function (_BaseBuilder) {
   }]);
 
   return ArrayBuilder;
-}(_BaseBuilder3.default);
+}(_ComplexBuilder3.default);
 
 exports.default = ArrayBuilder;
 ;
 
-/**
- * @method
- * @name ArrayBuilder#ofStrings
- * @returns {!ArrayBuilder}
- * @public
- */
+function _isAboveMax(i, max) {
+  if (max === void 0) {
+    return false;
+  }
 
-/**
- * @method
- * @name ArrayBuilder#ofBooleans
- * @returns {!ArrayBuilder}
- * @public
- */
+  return i > max;
+}
 
-/**
- * @method
- * @name ArrayBuilder#ofNumbers
- * @returns {!ArrayBuilder}
- * @public
- */
+function _isAboveMin(i, min) {
+  if (min === void 0) {
+    return true;
+  }
 
-['string', 'number', 'boolean'].forEach(function (type) {
-  Object.defineProperty(ArrayBuilder.prototype, 'of' + _StringUtil2.default.capitalizeFirstLetter(type) + 's', {
-    value: function value() {
-      return this.addItemValidator(_TypeValidators2.default[type]);
-    }
-  });
-});
+  return i >= min;
+}

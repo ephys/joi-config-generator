@@ -1,4 +1,4 @@
-import PrimitiveBuilder from './PrimitiveBuilder';
+import PrimitiveBuilder from './abstract/PrimitiveBuilder';
 import TypeValidators from '../validators/TypeValidators';
 
 export default class BooleanBuilder extends PrimitiveBuilder {
@@ -6,6 +6,6 @@ export default class BooleanBuilder extends PrimitiveBuilder {
   constructor(name, parent) {
     super(name, parent);
 
-    this.addValidator(TypeValidators.boolean);
+    this.validator(TypeValidators.boolean);
   }
 }

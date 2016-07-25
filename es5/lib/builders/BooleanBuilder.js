@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _PrimitiveBuilder2 = require('./PrimitiveBuilder');
+var _PrimitiveBuilder2 = require('./abstract/PrimitiveBuilder');
 
 var _PrimitiveBuilder3 = _interopRequireDefault(_PrimitiveBuilder2);
 
@@ -28,7 +28,7 @@ var BooleanBuilder = function (_PrimitiveBuilder) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BooleanBuilder).call(this, name, parent));
 
-    _this.addValidator(_TypeValidators2.default.boolean);
+    _this.validator(_TypeValidators2.default.boolean);
     return _this;
   }
 

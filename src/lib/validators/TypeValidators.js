@@ -1,3 +1,4 @@
+import Symbols from './Symbols';
 /**
  * @property {!function} string
  * @property {!function} number
@@ -7,10 +8,15 @@
 const validators = {};
 
 ['string', 'number', 'boolean', 'object'].forEach(type => {
+
+  const validator = function (input) {
+    return typeof input === type;
+  };
+
+  validator[Symbols.constraint] = `Type ${type}`;
+
   Object.defineProperty(validators, type, {
-    value: function (input) {
-      return typeof input === type;
-    }
+    value: validator
   });
 });
 

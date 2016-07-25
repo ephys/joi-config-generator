@@ -6,13 +6,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _PrimitiveBuilder2 = require('./PrimitiveBuilder');
+var _PrimitiveBuilder2 = require('./abstract/PrimitiveBuilder');
 
 var _PrimitiveBuilder3 = _interopRequireDefault(_PrimitiveBuilder2);
 
 var _TypeValidators = require('../validators/TypeValidators');
 
 var _TypeValidators2 = _interopRequireDefault(_TypeValidators);
+
+var _StringValidators = require('../validators/StringValidators');
+
+var _StringValidators2 = _interopRequireDefault(_StringValidators);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,7 +40,7 @@ var StringBuilder = function (_PrimitiveBuilder) {
 
     var _this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(StringBuilder)).call.apply(_Object$getPrototypeO, [this].concat(args)));
 
-    _this.addValidator(_TypeValidators2.default.string);
+    _this.validator(_TypeValidators2.default.string);
     return _this;
   }
 
@@ -52,9 +56,7 @@ var StringBuilder = function (_PrimitiveBuilder) {
     key: 'minLength',
     value: function minLength(length) {
       //noinspection JSValidateTypes
-      return this.addValidator(function (value) {
-        return value.length >= length;
-      });
+      return this.validator(_StringValidators2.default.build.minLength(length));
     }
 
     /**
@@ -68,9 +70,7 @@ var StringBuilder = function (_PrimitiveBuilder) {
     key: 'maxLength',
     value: function maxLength(length) {
       //noinspection JSValidateTypes
-      return this.addValidator(function (value) {
-        return value.length <= length;
-      });
+      return this.validator(_StringValidators2.default.build.maxLength(length));
     }
   }]);
 

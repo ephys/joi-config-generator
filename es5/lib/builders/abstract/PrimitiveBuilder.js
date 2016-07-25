@@ -6,15 +6,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === void 0) { var parent = Object.getPrototypeOf(object); if (parent === null) { return void 0; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === void 0) { return void 0; } return getter.call(receiver); } };
+
 var _BaseBuilder2 = require('./BaseBuilder');
 
 var _BaseBuilder3 = _interopRequireDefault(_BaseBuilder2);
 
-var _Symbols = require('./Symbols');
+var _Symbols = require('../Symbols');
 
 var _Symbols2 = _interopRequireDefault(_Symbols);
 
-var _io = require('../io/io');
+var _Symbols3 = require('../../validators/Symbols');
+
+var _Symbols4 = _interopRequireDefault(_Symbols3);
+
+var _io = require('../../io/io');
 
 var _io2 = _interopRequireDefault(_io);
 
@@ -30,7 +36,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//TODO refactor
 var PrimitiveBuilder = function (_BaseBuilder) {
   _inherits(PrimitiveBuilder, _BaseBuilder);
 
@@ -44,28 +49,35 @@ var PrimitiveBuilder = function (_BaseBuilder) {
   }
 
   /**
-   * Adds validators function to the builder. The determine if the input is valid or not.
-   *
-   * Validator call order is undefined.
-   * The validity is determined by a logical AND on the output of each validators.
-   * For a logical OR on some validators, put these validators in the same array.
-   *
-   * @param {!(Array.<function>|function)} validators - The list of validators, each validator should return true if the input is valid, false otherwise.
-   * @example stringBuilder.addValidator([validator.string.url, validator.string.ip]) // Valid if it is an url _OR_ an IP
-   * @example stringBuilder.addValidator(validator.string.url, validator.string.ip) // Valid if it is an url _AND_ an IP (obviously the input would always be invalid).
-   *
-   * @returns {!PrimitiveBuilder} this
+   * @inheritDoc
    */
 
 
   _createClass(PrimitiveBuilder, [{
-    key: 'addValidator',
-    value: function addValidator() {
-      for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
-        validators[_key] = arguments[_key];
-      }
+    key: 'end',
+    value: function end() {
+      // End this and parent object.
+      return _get(Object.getPrototypeOf(PrimitiveBuilder.prototype), 'end', this).call(this).end();
+    }
 
-      this._validators.push(validators);
+    /**
+     * Adds validators function to the builder. Its output will determine if the input is valid or not.
+     *
+     * Validator call order is undefined.
+     * The validity is determined by a logical AND on the output of each validators.
+     * For a logical OR on some validators, use a decorator.
+     *
+     * @param {!(Array.<function>|function)} validators - The list of validators, each validator should return true if the input is valid, false otherwise.
+     *
+     * @returns {!PrimitiveBuilder} this
+     */
+
+  }, {
+    key: 'validator',
+    value: function validator() {
+      var _validators;
+
+      (_validators = this._validators).push.apply(_validators, arguments);
       return this;
     }
 
@@ -93,10 +105,7 @@ var PrimitiveBuilder = function (_BaseBuilder) {
   }, {
     key: 'nullable',
     value: function nullable() {
-      var _nullable = arguments.length <= 0 || arguments[0] === void 0 ? true : arguments[0];
-
-      // parameter is a hack for the alternative parameter set method
-      this._nullable = _nullable;
+      this._nullable = true;
       return this;
     }
   }, {
@@ -104,7 +113,8 @@ var PrimitiveBuilder = function (_BaseBuilder) {
     value: function value(currentValue) {
       var _this2 = this;
 
-      var validation, hints, description, hintText, message, value;
+      var allowUndefined = arguments.length <= 1 || arguments[1] === void 0 ? false : arguments[1];
+      var validation, name, hints, description, hintText, message, value;
       return regeneratorRuntime.async(function value$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -119,42 +129,44 @@ var PrimitiveBuilder = function (_BaseBuilder) {
               return _context.abrupt('return', currentValue);
 
             case 3:
+              name = this[_Symbols2.default.name]();
+
 
               if (currentValue !== void 0) {
-                console.info('The current value for "' + this._name + '" (' + _cliColor2.default.yellow(JSON.stringify(currentValue)) + ') failed constraint validation (' + validation + '). Please enter a new value.');
+                console.info('The current value for "' + name + '" (' + _cliColor2.default.yellow(JSON.stringify(currentValue)) + ') failed constraint validation (' + validation + '). Please enter a new value.');
               }
 
               hints = this[_Symbols2.default.getHints]();
               description = this._description ? ' - ' + _cliColor2.default.cyan(this._description) : '';
               hintText = hints.length > 0 ? _cliColor2.default.magenta(' (' + hints.join(', ') + ')') : '';
-              message = _cliColor2.default.cyan(this._name) + description + hintText;
-              _context.next = 10;
+              message = _cliColor2.default.cyan(name) + description + hintText;
+              _context.next = 11;
               return regeneratorRuntime.awrap(_io2.default.getValue(message, function (val) {
                 if (val === void 0) {
-                  if (_this2._defaultValue === void 0) {
-                    return 'No default value.';
+                  if (allowUndefined || _this2._defaultValue !== void 0) {
+                    return true;
                   }
 
-                  return true;
+                  return 'No default value.';
                 }
 
                 return _this2[_Symbols2.default.validate](val);
               }));
 
-            case 10:
+            case 11:
               value = _context.sent;
 
               if (!(value === void 0)) {
-                _context.next = 13;
+                _context.next = 14;
                 break;
               }
 
               return _context.abrupt('return', this._defaultValue);
 
-            case 13:
+            case 14:
               return _context.abrupt('return', value);
 
-            case 14:
+            case 15:
             case 'end':
               return _context.stop();
           }
@@ -164,7 +176,6 @@ var PrimitiveBuilder = function (_BaseBuilder) {
   }, {
     key: _Symbols2.default.getHints,
     value: function value() {
-      // TODO extract from validators.
       var hints = [];
 
       if (this._nullable) {
@@ -175,6 +186,32 @@ var PrimitiveBuilder = function (_BaseBuilder) {
 
       if (this._defaultValue) {
         hints.push('Default: ' + JSON.stringify(this._defaultValue));
+      }
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+
+      var _iteratorError = void 0;
+
+      try {
+        for (var _iterator = this._validators[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var validator = _step.value;
+
+          hints.push(_getValidatorName(validator));
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
 
       return hints;
@@ -190,11 +227,7 @@ var PrimitiveBuilder = function (_BaseBuilder) {
         }
       }
 
-      if (!_checkValidatorsAnd(this._validators, _value)) {
-        return 'Validator check failed';
-      }
-
-      return true;
+      return _checkValidators(this._validators, _value);
     }
   }]);
 
@@ -204,47 +237,7 @@ var PrimitiveBuilder = function (_BaseBuilder) {
 exports.default = PrimitiveBuilder;
 
 
-function _checkValidatorsAnd(validators, value) {
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-
-  var _iteratorError = void 0;
-
-  try {
-    for (var _iterator = validators[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var validator = _step.value;
-
-      if (Array.isArray(validator)) {
-        if (!_checkValidatorOr(validator, value)) {
-          return false;
-        }
-
-        continue;
-      }
-
-      if (!validator(value)) {
-        return false;
-      }
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-
-  return true;
-}
-
-function _checkValidatorOr(validators, value) {
+function _checkValidators(validators, value) {
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
 
@@ -254,16 +247,9 @@ function _checkValidatorOr(validators, value) {
     for (var _iterator2 = validators[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
       var validator = _step2.value;
 
-      if (Array.isArray(validator)) {
-        if (_checkValidatorsAnd(validator, value)) {
-          return true;
-        }
-
-        continue;
-      }
-
-      if (validator(value)) {
-        return true;
+      var result = validator(value);
+      if (result !== true) {
+        return result || 'Constraint violation: ' + _getValidatorName(validator);
       }
     }
   } catch (err) {
@@ -281,5 +267,9 @@ function _checkValidatorOr(validators, value) {
     }
   }
 
-  return false;
+  return true;
+}
+
+function _getValidatorName(validator) {
+  return validator[_Symbols4.default.constraint] || validator.name || validator.constructor.name;
 }

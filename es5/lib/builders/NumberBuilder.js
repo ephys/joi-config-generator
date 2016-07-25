@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _PrimitiveBuilder2 = require('./PrimitiveBuilder');
+var _PrimitiveBuilder2 = require('./abstract/PrimitiveBuilder');
 
 var _PrimitiveBuilder3 = _interopRequireDefault(_PrimitiveBuilder2);
 
@@ -40,7 +40,7 @@ var NumberBuilder = function (_PrimitiveBuilder) {
 
     var _this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(NumberBuilder)).call.apply(_Object$getPrototypeO, [this].concat(args)));
 
-    _this.addValidator(_TypeValidators2.default.number);
+    _this.validator(_TypeValidators2.default.number);
     return _this;
   }
 
@@ -53,14 +53,8 @@ var NumberBuilder = function (_PrimitiveBuilder) {
   _createClass(NumberBuilder, [{
     key: 'integer',
     value: function integer() {
-      var enable = arguments.length <= 0 || arguments[0] === void 0 ? true : arguments[0];
-
-      if (!enable) {
-        return this;
-      }
-
       //noinspection JSValidateTypes
-      return this.addValidator(_NumberValidators2.default.integer);
+      return this.validator(_NumberValidators2.default.integer);
     }
 
     /**
@@ -73,9 +67,7 @@ var NumberBuilder = function (_PrimitiveBuilder) {
     key: 'min',
     value: function min(_min) {
       //noinspection JSValidateTypes
-      return this.addValidator(function (value) {
-        return value >= _min;
-      });
+      return this.validator(_NumberValidators2.default.build.min(_min));
     }
 
     /**
@@ -88,9 +80,7 @@ var NumberBuilder = function (_PrimitiveBuilder) {
     key: 'max',
     value: function max(_max) {
       //noinspection JSValidateTypes
-      return this.addValidator(function (value) {
-        return value <= _max;
-      });
+      return this.validator(_NumberValidators2.default.build.max(_max));
     }
   }]);
 

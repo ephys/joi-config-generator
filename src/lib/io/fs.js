@@ -1,5 +1,6 @@
 import _fs from 'fs';
 import fs from 'fs-promise';
+import * as path from 'path';
 
 export default {
   stat(path) {
@@ -30,5 +31,26 @@ export default {
     });
   },
 
-  writeFile: fs.writeFile
+  writeFile: fs.writeFile,
+
+  async ensureDirectoryExistence(filePath) {
+    const dirname = path.dirname(filePath);
+
+    if (await this.directoryExists(dirname)) {
+      return true;
+    }
+
+    await this.ensureDirectoryExistence(dirname);
+    await fs.mkdir(dirname);
+
+    return true;
+  },
+
+  async directoryExists(path) {
+    try {
+      return await this.stat(path).isDirectory();
+    } catch (err) {
+      return false;
+    }
+  }
 };

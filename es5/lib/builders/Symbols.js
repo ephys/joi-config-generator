@@ -6,5 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
   build: Symbol('build'),
   validate: Symbol('validate'),
-  getHints: Symbol('getHints')
+  getHints: Symbol('getHints'),
+  name: Symbol('name')
 };

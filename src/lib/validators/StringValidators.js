@@ -1,32 +1,49 @@
 
+import Symbols from './Symbols';
+
 const validators = {
 
-  email(string) {
-    // TODO check if is email
-    return true;
-  },
-
-  url(string) {
-    // TODO check if url
-    return true;
-  },
-
   alphanum(string) {
-    // TODO check if alphanum
-    return true;
+    return /^[a-zA-Z]+$/.test(string);
   },
 
   urlfriendly(string) {
-    // TODO check if alphanum, _ or -
-    return true;
+    if (typeof string !== 'string') {
+      return false;
+    }
+
+    return /^[a-zA-Z\-_]+$/.test(string);
   },
 
-  ip(string) {
-    return true;
+  build: {
+
+    /**
+     * Creates a validator that sets a lower limit for the string length.
+     * @param {!number} length - The lower limit.
+     * @returns {!Validator}
+     */
+    minLength(length) {
+      const validator = (value) => (value.length >= length);
+      validator[Symbols.constraint] = `Minimum ${length} character(s)`;
+
+      return validator;
+    },
+
+    /**
+     * Creates a validator that sets an upper limit for the string length.
+     * @param {!number} length - The upper limit.
+     * @returns {!Validator}
+     */
+    maxLength(length) {
+      const validator = (value) => (value.length <= length);
+      validator[Symbols.constraint] = `Maximum ${length} character(s)`;
+
+      return validator;
+    }
   }
 };
 
-validators.alphanum.description = 'Alphanumeric only';
-validators.urlfriendly.description = 'URL Friendly characters only';
+validators.alphanum[Symbols.constraint] = 'Alphanumeric only';
+validators.urlfriendly[Symbols.constraint] = 'URL Friendly characters only';
 
 export default validators;

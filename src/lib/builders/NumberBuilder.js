@@ -1,4 +1,4 @@
-import PrimitiveBuilder from './PrimitiveBuilder';
+import PrimitiveBuilder from './abstract/PrimitiveBuilder';
 import NumberValidators from '../validators/NumberValidators';
 import TypeValidators from '../validators/TypeValidators';
 
@@ -7,20 +7,16 @@ export default class NumberBuilder extends PrimitiveBuilder {
   constructor(...args) {
     super(...args);
 
-    this.addValidator(TypeValidators.number);
+    this.validator(TypeValidators.number);
   }
 
   /**
    * Deny any non integer input.
    * @returns {!NumberBuilder}
    */
-  integer(enable = true) {
-    if (!enable) {
-      return this;
-    }
-
+  integer() {
     //noinspection JSValidateTypes
-    return this.addValidator(NumberValidators.integer);
+    return this.validator(NumberValidators.integer);
   }
 
   /**
@@ -30,7 +26,7 @@ export default class NumberBuilder extends PrimitiveBuilder {
    */
   min(min) {
     //noinspection JSValidateTypes
-    return this.addValidator(value => value >= min);
+    return this.validator(NumberValidators.build.min(min));
   }
 
   /**
@@ -40,6 +36,6 @@ export default class NumberBuilder extends PrimitiveBuilder {
    */
   max(max) {
     //noinspection JSValidateTypes
-    return this.addValidator(value => value <= max);
+    return this.validator(NumberValidators.build.max(max));
   }
 }

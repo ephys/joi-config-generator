@@ -1,9 +1,9 @@
 import BaseBuilder from './BaseBuilder';
-import Symbols from './Symbols';
-import io from '../io/io';
+import Symbols from '../Symbols';
+import ValidatorSymbols from '../../validators/Symbols';
+import io from '../../io/io';
 import colors from 'cli-color';
 
-//TODO refactor
 export default class PrimitiveBuilder extends BaseBuilder {
 
   constructor(name, parent) {
@@ -13,20 +13,26 @@ export default class PrimitiveBuilder extends BaseBuilder {
   }
 
   /**
-   * Adds validators function to the builder. The determine if the input is valid or not.
+   * @inheritDoc
+   */
+  end() {
+    // End this and parent object.
+    return super.end().end();
+  }
+
+  /**
+   * Adds validators function to the builder. Its output will determine if the input is valid or not.
    *
    * Validator call order is undefined.
    * The validity is determined by a logical AND on the output of each validators.
-   * For a logical OR on some validators, put these validators in the same array.
+   * For a logical OR on some validators, use a decorator.
    *
    * @param {!(Array.<function>|function)} validators - The list of validators, each validator should return true if the input is valid, false otherwise.
-   * @example stringBuilder.addValidator([validator.string.url, validator.string.ip]) // Valid if it is an url _OR_ an IP
-   * @example stringBuilder.addValidator(validator.string.url, validator.string.ip) // Valid if it is an url _AND_ an IP (obviously the input would always be invalid).
    *
    * @returns {!PrimitiveBuilder} this
    */
-  addValidator(...validators) {
-    this._validators.push(validators);
+  validator(...validators) {
+    this._validators.push(...validators);
     return this;
   }
 
@@ -47,34 +53,36 @@ export default class PrimitiveBuilder extends BaseBuilder {
    *
    * @returns {!PrimitiveBuilder} this
    */
-  nullable(nullable = true) { // parameter is a hack for the alternative parameter set method
-    this._nullable = nullable;
+  nullable() {
+    this._nullable = true;
     return this;
   }
 
-  async [Symbols.build](currentValue) {
+  async [Symbols.build](currentValue, allowUndefined = false) {
     const validation = this[Symbols.validate](currentValue);
     if (validation === true) {
       return currentValue;
     }
 
+    const name = this[Symbols.name]();
+
     if (currentValue !== void 0) {
-      console.info(`The current value for "${this._name}" (${colors.yellow(JSON.stringify(currentValue))}) failed constraint validation (${validation}). Please enter a new value.`);
+      console.info(`The current value for "${name}" (${colors.yellow(JSON.stringify(currentValue))}) failed constraint validation (${validation}). Please enter a new value.`);
     }
 
     const hints = this[Symbols.getHints]();
 
     const description = this._description ? ` - ${colors.cyan(this._description)}` : '';
     const hintText = hints.length > 0 ? colors.magenta(` (${hints.join(', ')})`) : '';
-    const message = colors.cyan(this._name) + description + hintText;
+    const message = colors.cyan(name) + description + hintText;
 
     const value = await io.getValue(message, val => {
       if (val === void 0) {
-        if (this._defaultValue === void 0) {
-          return 'No default value.';
+        if (allowUndefined || this._defaultValue !== void 0) {
+          return true;
         }
 
-        return true;
+        return 'No default value.';
       }
 
       return this[Symbols.validate](val);
@@ -88,7 +96,6 @@ export default class PrimitiveBuilder extends BaseBuilder {
   }
 
   [Symbols.getHints]() {
-    // TODO extract from validators.
     const hints = [];
 
     if (this._nullable) {
@@ -99,6 +106,10 @@ export default class PrimitiveBuilder extends BaseBuilder {
 
     if (this._defaultValue) {
       hints.push(`Default: ${JSON.stringify(this._defaultValue)}`);
+    }
+
+    for (const validator of this._validators) {
+      hints.push(_getValidatorName(validator));
     }
 
     return hints;
@@ -113,46 +124,21 @@ export default class PrimitiveBuilder extends BaseBuilder {
       }
     }
 
-    if (!_checkValidatorsAnd(this._validators, value)) {
-      return 'Validator check failed';
-    }
-
-    return true;
+    return _checkValidators(this._validators, value);
   }
 }
 
-function _checkValidatorsAnd(validators, value) {
+function _checkValidators(validators, value) {
   for (const validator of validators) {
-    if (Array.isArray(validator)) {
-      if (!_checkValidatorOr(validator, value)) {
-        return false;
-      }
-
-      continue;
-    }
-
-    if (!validator(value)) {
-      return false;
+    const result = validator(value);
+    if (result !== true) {
+      return result || `Constraint violation: ${_getValidatorName(validator)}`;
     }
   }
 
   return true;
 }
 
-function _checkValidatorOr(validators, value) {
-  for (const validator of validators) {
-    if (Array.isArray(validator)) {
-      if (_checkValidatorsAnd(validator, value)) {
-        return true;
-      }
-
-      continue;
-    }
-
-    if (validator(value)) {
-      return true;
-    }
-  }
-
-  return false;
+function _getValidatorName(validator) {
+  return validator[ValidatorSymbols.constraint] || validator.name || validator.constructor.name;
 }

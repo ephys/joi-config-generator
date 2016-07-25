@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Symbols = require('./Symbols');
+var _Symbols = require('../Symbols');
 
 var _Symbols2 = _interopRequireDefault(_Symbols);
 
@@ -17,7 +17,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var BaseBuilder = function () {
 
   /**
-   * @param {!String} name
+   * @param {!*} name
    * @param {!ObjectBuilder} parent
    */
   function BaseBuilder(name, parent) {
@@ -28,32 +28,56 @@ var BaseBuilder = function () {
   }
 
   /**
-   * Finalizes the current builder and gives control back to the parent.
-   * @returns {!BaseBuilder}
+   * Sets the name of the property.
+   * @param {!String} name - The name of the property.
+   * @returns {!BaseBuilder} this
    */
 
 
   _createClass(BaseBuilder, [{
-    key: 'endObject',
-    value: function endObject() {
-      if (this._parent && this._parent._parent) {
-        return this._parent._parent;
+    key: 'name',
+    value: function name(_name) {
+      this._name = _name;
+      return this;
+    }
+  }, {
+    key: _Symbols2.default.name,
+    value: function value() {
+      if (this._name == null) {
+        return null;
       }
 
-      return this;
+      var brackets = !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(this._name);
+
+      var displayName = brackets ? '[' + JSON.stringify(this._name) + ']' : this._name;
+      var separator = brackets ? '' : '.';
+      var parentName = this._parent ? this._parent[_Symbols2.default.name]() : null;
+
+      return (parentName ? parentName + separator : '') + displayName;
+    }
+
+    /**
+     * Finalizes the current builder and gives control back to the parent.
+     * @returns {!BaseBuilder}
+     */
+
+  }, {
+    key: 'end',
+    value: function end() {
+      return this._parent || this;
     }
   }, {
     key: 'then',
     value: function then() {
       var _getParent2;
 
-      return (_getParent2 = this._getParent()).then.apply(_getParent2, arguments);
+      return (_getParent2 = _getParent(this)).then.apply(_getParent2, arguments);
     }
 
     /**
      * Adds an object property to the current object.
      *
-     * @param {!String} name - The name of the property.
+     * @param {!String} [name] - The name of the property.
      * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!ObjectBuilder} The property builder.
      */
@@ -61,13 +85,13 @@ var BaseBuilder = function () {
   }, {
     key: 'addObject',
     value: function addObject(name, properties) {
-      return this._getParent().addObject(name, properties);
+      return _getParent(this).addObject(name, properties);
     }
 
     /**
      * Adds an Array property to the current object.
      *
-     * @param {!String} name - The name of the property.
+     * @param {!String} [name] - The name of the property.
      * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!ArrayBuilder} The property builder.
      */
@@ -75,13 +99,13 @@ var BaseBuilder = function () {
   }, {
     key: 'addArray',
     value: function addArray(name, properties) {
-      return this._getParent().addArray(name, properties);
+      return _getParent(this).addArray(name, properties);
     }
 
     /**
      * Adds a String property to the current object.
      *
-     * @param {!String} name - The name of the property.
+     * @param {!String} [name] - The name of the property.
      * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!StringBuilder}
      */
@@ -89,13 +113,13 @@ var BaseBuilder = function () {
   }, {
     key: 'addString',
     value: function addString(name, properties) {
-      return this._getParent().addString(name, properties);
+      return _getParent(this).addString(name, properties);
     }
 
     /**
      * Adds a Number property to the current object.
      *
-     * @param {!String} name - The name of the property.
+     * @param {!String} [name] - The name of the property.
      * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!NumberBuilder} The property builder.
      */
@@ -103,13 +127,13 @@ var BaseBuilder = function () {
   }, {
     key: 'addNumber',
     value: function addNumber(name, properties) {
-      return this._getParent().addNumber(name, properties);
+      return _getParent(this).addNumber(name, properties);
     }
 
     /**
      * Adds a Boolean property to the current object.
      *
-     * @param {!String} name - The name of the property.
+     * @param {!String} [name] - The name of the property.
      * @param {!Object} [properties = {}] - Properties to set on the object. Same as calling the methods.
      * @returns {!BooleanBuilder} The property builder.
      */
@@ -117,7 +141,7 @@ var BaseBuilder = function () {
   }, {
     key: 'addBoolean',
     value: function addBoolean(name, properties) {
-      return this._getParent().addBoolean(name, properties);
+      return _getParent(this).addBoolean(name, properties);
     }
 
     /**
@@ -149,26 +173,24 @@ var BaseBuilder = function () {
         }
       }, null, this);
     }
-
-    /**
-     * Returns the parent of this object.
-     *
-     * @return {!ObjectBuilder}
-     * @private
-     */
-
-  }, {
-    key: '_getParent',
-    value: function _getParent() {
-      if (!this._parent) {
-        throw new Error('This builder does not have a parent, this should not have happened.');
-      }
-
-      return this._parent;
-    }
   }]);
 
   return BaseBuilder;
 }();
 
+/**
+ * Returns the parent of this object.
+ *
+ * @return {!ObjectBuilder}
+ * @private
+ */
+
+
 exports.default = BaseBuilder;
+function _getParent(self) {
+  if (!self._parent) {
+    throw new Error('This builder does not have a parent, this should not have happened.');
+  }
+
+  return self._parent;
+}

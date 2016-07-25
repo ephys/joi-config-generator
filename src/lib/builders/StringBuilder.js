@@ -1,12 +1,13 @@
-import PrimitiveBuilder from './PrimitiveBuilder';
+import PrimitiveBuilder from './abstract/PrimitiveBuilder';
 import TypeValidators from '../validators/TypeValidators';
+import StringValidators from '../validators/StringValidators';
 
 export default class StringBuilder extends PrimitiveBuilder {
 
   constructor(...args) {
     super(...args);
 
-    this.addValidator(TypeValidators.string);
+    this.validator(TypeValidators.string);
   }
 
   /**
@@ -17,7 +18,7 @@ export default class StringBuilder extends PrimitiveBuilder {
    */
   minLength(length) {
     //noinspection JSValidateTypes
-    return this.addValidator(value => value.length >= length);
+    return this.validator(StringValidators.build.minLength(length));
   }
 
   /**
@@ -28,6 +29,6 @@ export default class StringBuilder extends PrimitiveBuilder {
    */
   maxLength(length) {
     //noinspection JSValidateTypes
-    return this.addValidator(value => value.length <= length);
+    return this.validator(StringValidators.build.maxLength(length));
   }
 }

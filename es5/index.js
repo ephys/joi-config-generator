@@ -29,6 +29,10 @@ var _TypeValidators = require('./lib/validators/TypeValidators');
 
 var _TypeValidators2 = _interopRequireDefault(_TypeValidators);
 
+var _ValidatorDecorators = require('./lib/validators/ValidatorDecorators');
+
+var _ValidatorDecorators2 = _interopRequireDefault(_ValidatorDecorators);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 global.regeneratorRuntime = _regeneratorRuntime2.default;
@@ -42,5 +46,6 @@ global.regeneratorRuntime = _regeneratorRuntime2.default;
 var validator = exports.validator = {
   string: _StringValidators2.default,
   number: _NumberValidators2.default,
-  type: _TypeValidators2.default
+  type: _TypeValidators2.default,
+  decorators: _ValidatorDecorators2.default
 };

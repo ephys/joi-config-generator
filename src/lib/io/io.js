@@ -25,6 +25,7 @@ export default {
   },
 
   async writeConfig(filepath, config) {
+    await fs.ensureDirectoryExistence(filepath);
     return fs.writeFile(filepath, JSON.stringify(config));
   },
 

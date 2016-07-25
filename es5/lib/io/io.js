@@ -77,9 +77,13 @@ exports.default = {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+            _context2.next = 2;
+            return regeneratorRuntime.awrap(_fs2.default.ensureDirectoryExistence(filepath));
+
+          case 2:
             return _context2.abrupt('return', _fs2.default.writeFile(filepath, JSON.stringify(config)));
 
-          case 1:
+          case 3:
           case 'end':
             return _context2.stop();
         }
