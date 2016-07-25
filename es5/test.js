@@ -6,14 +6,31 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _index2.default)('test/array.json').addObject('database').addArray('roles', {
-  minItems: 2,
-  maxItems: 10
-}).addString().addObject().addBoolean('test').end().end().end().then(function (configObject) {
-  return console.log('Config contents: ', configObject);
+var filename = 'mmc/config/config_' + (process.env.NODE_ENV || 'production') + '.json';
+
+var configBuilder = (0, _index2.default)(filename).addBoolean('debug').nullable().defaultValue(null).addString('JWT_SECRET').addObject('database').addString('database').addString('username').addString('password').addObject('options').addString('dialect').addString('host').end().end();
+
+configBuilder.then(function (newConfig) {
+  console.log(newConfig);
 }).catch(function (e) {
-  return console.error(e);
+  console.log(e);
 });
+
+// buildConfig('test/array.json')
+//   .addObject('database')
+//     .addArray('roles', {
+//       minItems: 2,
+//       maxItems: 10
+//     })
+//       .addString()
+//       .addObject()
+//         .addBoolean('test')
+//       .end()
+//     .end()
+//   .end()
+//
+//   .then(configObject => console.log('Config contents: ', configObject))
+//   .catch(e => console.error(e));
 
 // buildConfig('test/database.json')
 //   .addObject('database')

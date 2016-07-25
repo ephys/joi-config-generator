@@ -16,61 +16,51 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   readConfig: function readConfig(filePath) {
-    var fileStat, contents;
+    var contents;
     return regeneratorRuntime.async(function readConfig$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return regeneratorRuntime.awrap(_fs2.default.stat(filePath));
+            return regeneratorRuntime.awrap(_fs2.default.fileExists(filePath));
 
           case 2:
-            fileStat = _context.sent;
-
-            if (!(fileStat === null)) {
-              _context.next = 7;
+            if (_context.sent) {
+              _context.next = 4;
               break;
             }
 
             return _context.abrupt('return', {});
 
-          case 7:
-            if (!fileStat.isFile()) {
-              _context.next = 20;
-              break;
-            }
-
-            _context.next = 10;
+          case 4:
+            _context.next = 6;
             return regeneratorRuntime.awrap(_fs2.default.readFile(filePath));
 
-          case 10:
+          case 6:
             contents = _context.sent;
 
             if (!(contents.length === 0)) {
-              _context.next = 13;
+              _context.next = 9;
               break;
             }
 
             return _context.abrupt('return', {});
 
-          case 13:
-            _context.prev = 13;
+          case 9:
+            _context.prev = 9;
             return _context.abrupt('return', JSON.parse(contents));
 
-          case 17:
-            _context.prev = 17;
-            _context.t0 = _context['catch'](13);
+          case 13:
+            _context.prev = 13;
+            _context.t0 = _context['catch'](9);
             throw new Error('File "' + filePath + '" already has content, which is not JSON.');
 
-          case 20:
-            throw new Error('File "' + filePath + '" is not a writable file.');
-
-          case 21:
+          case 16:
           case 'end':
             return _context.stop();
         }
       }
-    }, null, this, [[13, 17]]);
+    }, null, this, [[9, 13]]);
   },
   writeConfig: function writeConfig(filepath, config) {
     return regeneratorRuntime.async(function writeConfig$(_context2) {
@@ -78,12 +68,21 @@ exports.default = {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return regeneratorRuntime.awrap(_fs2.default.ensureDirectoryExistence(filepath));
+            return regeneratorRuntime.awrap(_fs2.default.fileExists(filepath));
 
           case 2:
+            if (_context2.sent) {
+              _context2.next = 5;
+              break;
+            }
+
+            _context2.next = 5;
+            return regeneratorRuntime.awrap(_fs2.default.ensureDirectoryExistence(filepath));
+
+          case 5:
             return _context2.abrupt('return', _fs2.default.writeFile(filepath, JSON.stringify(config)));
 
-          case 3:
+          case 6:
           case 'end':
             return _context2.stop();
         }

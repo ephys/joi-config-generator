@@ -36,6 +36,10 @@ export default {
   async ensureDirectoryExistence(filePath) {
     const dirname = path.dirname(filePath);
 
+    if (dirname === '.') {
+      return true;
+    }
+
     if (await this.directoryExists(dirname)) {
       return true;
     }
@@ -47,10 +51,28 @@ export default {
   },
 
   async directoryExists(path) {
-    try {
-      return await this.stat(path).isDirectory();
-    } catch (err) {
+    const stat = await this.stat(path);
+    if (stat === null) {
       return false;
     }
+
+    if (!stat.isDirectory()) {
+      throw new Error(`Resource "${path}" exists but is not a directory.`);
+    }
+
+    return true;
+  },
+
+  async fileExists(path) {
+    const stat = await this.stat(path);
+    if (stat === null) {
+      return false;
+    }
+
+    if (!stat.isFile()) {
+      throw new Error(`Resource "${path}" exists but is not a file.`);
+    }
+
+    return true;
   }
 };

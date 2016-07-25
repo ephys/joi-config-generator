@@ -104,7 +104,7 @@ export default class PrimitiveBuilder extends BaseBuilder {
       hints.push('Not Null');
     }
 
-    if (this._defaultValue) {
+    if (this._defaultValue !== void 0) {
       hints.push(`Default: ${JSON.stringify(this._defaultValue)}`);
     }
 
