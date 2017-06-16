@@ -1,0 +1,6 @@
+{
+  "extends": "@foobarhq/eslint-config",
+  "env": {
+    "jest": true
+  }
+}

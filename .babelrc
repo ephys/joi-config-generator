@@ -1,11 +1,12 @@
 {
-  "presets": [
-    "es2015"
-  ],
+  "presets": [["env", {
+    "targets": {
+      "node": 8
+    }
+  }]],
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-undefined-to-void",
-    "transform-regenerator",
-    "syntax-async-functions"
-  ]
+    "transform-flow-strip-types",
+    "transform-object-rest-spread"
+  ],
+  "sourceMaps": "inline"
 }
