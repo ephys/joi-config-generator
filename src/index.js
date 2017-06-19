@@ -62,7 +62,15 @@ function getEnv(key) {
     return getEnv(value.substr(1));
   }
 
-  return JSON.parse(value);
+  if (typeof value !== 'string') {
+    return value;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    return value;
+  }
 }
 
 function getName(validator) {
