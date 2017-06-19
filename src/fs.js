@@ -84,5 +84,5 @@ export async function writeJsonFile(filepath, config) {
     await ensureDirectoryExistence(filepath);
   }
 
-  return fs.writeFile(filepath, JSON.stringify(config), 2);
+  return fs.writeFile(filepath, JSON.stringify(config, null, 2));
 }
