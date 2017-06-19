@@ -39,15 +39,30 @@ function makeQuerier(opts: Options) {
       const name = getName(validator) || error.key;
       const key = envPrefix + constantCase(name);
 
-      if (currentValue === process.env[key]) {
+      const newValue = getEnv(key);
+
+      if (currentValue === newValue) {
         throw new Error(`Env variable "${key}" is invalid: ${error.reason}`);
       } else {
-        return process.env[key];
+        return newValue;
       }
     };
   } else {
     return queryCli;
   }
+}
+
+function getEnv(key) {
+  const value = process.env[key];
+
+  // value redirection
+  // this way, a key like APP_API_PORT with a value of $PORT uses the PORT env variable
+  // (use "$PORT" if you wish to use the raw value.)
+  if (typeof value === 'string' && value.charAt(0) === '$') {
+    return getEnv(value.substr(1));
+  }
+
+  return JSON.parse(value);
 }
 
 function getName(validator) {
