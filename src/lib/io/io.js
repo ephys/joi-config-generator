@@ -25,7 +25,7 @@ export default {
       await fs.ensureDirectoryExistence(filepath);
     }
 
-    return fs.writeFile(filepath, JSON.stringify(config));
+    return fs.writeFile(filepath, JSON.stringify(config), 2);
   },
 
   async getValue(question, validator) {
