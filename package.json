@@ -1,6 +1,6 @@
 {
   "name": "json-config-generator",
-  "version": "0.1.0-2",
+  "version": "0.1.0-3",
   "description": "Generates and validates JSON configuration files from a programmable JavaScript definition.",
   "main": "lib/index.js",
   "scripts": {
