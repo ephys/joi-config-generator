@@ -35,8 +35,10 @@ buildConfig({
   allowEnv: true,
   allowFile: true,
   allowPrompt: true,
-  file: `${__dirname}/.env`,
-  format: 'env',
+  file: {
+    path: `${__dirname}/.env`,
+    format: 'env',
+  },
 }).then(result => {
   console.log(result);
 });

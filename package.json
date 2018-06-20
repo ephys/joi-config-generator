@@ -22,6 +22,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "eslint": "^3.19.0",
+    "flow-bin": "^0.74.0",
     "jest": "^20.0.4"
   },
   "dependencies": {
@@ -34,6 +35,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/foobarhq/json-config-generator"
+    "url": "https://github.com/madkings/joi-config-generator"
   }
 }
