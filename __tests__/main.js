@@ -1,43 +1,35 @@
+// @flow
+
 import path from 'path';
-import { structValidator as struct, numberValidator as number, stringValidator as string, enumValidator as Enum } from '../src/validators';
-import buildConfig, { description } from '../src';
+import Joi from 'joi';
+import buildConfig from '../src';
 
 const dialects = ['mariadb', 'mysql', 'postgres', 'sqlite', 'mssql'];
 
-function port(opts) {
-  return number({
-    integer: true,
-    min: 1024,
-    max: 65535,
-    ...opts,
-  });
-}
-
-const schema = struct({
-  api: struct({
-    jwtSecret: string({
-      minLength: 10,
-      [description]: 'Secret to use to sign Json Web Tokens',
-    }),
-    port: port({
-      defaultValue: 8080,
-      [description]: 'Port to use for the HTTP server'
-    }),
+const schema = Joi.object().keys({
+  api: Joi.object().keys({
+    jwtSecret: Joi.string()
+      .trim()
+      .min(10)
+      .description('Secret to use to sign Json Web Tokens'),
+    port: Joi.number().port().description('Port to use for the HTTP server'),
   }),
-  hashRounds: number({
-    integer: true,
-    defaultValue: 8,
-    [description]: 'Please read the doc on rounds: https://www.npmjs.com/package/bcrypt',
-  }),
-  logDirectory: string({ defaultValue: path.resolve(`${__dirname}/../../.app`) }),
-  database: struct({
-    database: string({ defaultValue: 'dbname' }),
-    username: string(),
-    password: string({ trim: false, defaultValue: '' }),
-    options: struct({
-      dialect: Enum(dialects, { defaultValue: 'postgres' }),
-      host: string({ defaultValue: 'localhost '}),
-      port: port({ defaultValue: 5432 }),
+  hashRounds: Joi.number()
+    .integer()
+    .default(8)
+    .description('Please read the doc on rounds: https://www.npmjs.com/package/bcrypt'),
+  logDirectory: Joi.string().trim().default(path.resolve(`${__dirname}/../../.app`)),
+  database: Joi.object().keys({
+    database: Joi.string().trim().default('dbname'),
+    username: Joi.string().trim(),
+    password: Joi.string().default(''),
+    options: Joi.object().keys({
+      dialect: Joi.string()
+        .trim()
+        .valid(dialects)
+        .default('postgres'),
+      host: Joi.string().trim().default('localhost'),
+      port: Joi.number().port().default(5432),
     }),
   }),
 });
@@ -45,8 +37,10 @@ const schema = struct({
 describe('json-config-generator', () => {
   test('main', async () => {
     const result = await buildConfig({
-      file: `${__dirname}/../app/config.json`,
+      // file: `${__dirname}/../app/config.json`,
+      file: `${__dirname}/.env`,
       schema,
+      format: 'env',
     });
 
     console.log(result);

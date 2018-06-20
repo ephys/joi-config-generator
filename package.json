@@ -1,7 +1,7 @@
 {
-  "name": "json-config-generator",
-  "version": "0.1.0-4",
-  "description": "Generates and validates JSON configuration files from a programmable JavaScript definition.",
+  "name": "joi-config-generator",
+  "version": "1.0.0",
+  "description": "Generates and validates JSON/dotenv configuration files using a JOI schema.",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
@@ -15,26 +15,22 @@
     "node": ">=8",
     "npm": ">=5"
   },
-  "peerDependencies": {
-    "@foobarhq/validators": "^1.1.0"
-  },
   "devDependencies": {
     "@foobarhq/eslint-config": "^1.2.0",
-    "@foobarhq/validators": "^1.1.0",
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-env": "^1.5.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^3.19.0",
     "jest": "^20.0.4"
   },
   "dependencies": {
     "chalk": "^1.1.3",
-    "cli-color": "^1.1.0",
     "constant-case": "^2.0.0",
-    "mz": "^2.6.0",
-    "read-input": "^0.3.1",
-    "readline-sync": "^1.4.7"
+    "dotenv-parser-serializer": "^1.0.1",
+    "inquirer": "^6.0.0",
+    "joi": "^13.4.0",
+    "mz": "^2.7.0"
   },
   "repository": {
     "type": "git",
