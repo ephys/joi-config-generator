@@ -21,11 +21,6 @@ export type Options = {
   env?: CfEnvOptions,
 };
 
-/*
- * TODO write description in .env file
- * TODO support $FIELDS
- */
-
 export const JOI_CONFIG = {
   abortEarly: true,
   convert: true,
