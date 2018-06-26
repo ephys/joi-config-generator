@@ -114,7 +114,7 @@ export default async function buildConfig(opts: Options) {
       }
 
       const helpMsg = availableOptions.length > 0
-        ? `How to provide this configuration option:\n${availableOptions.join('\n')}`
+        ? `How to provide this configuration option (select one):\n${availableOptions.join('\n')}`
         : 'All configuration sources have been disabled. Please check your code related to building your configuration.';
 
       throw new Error(
