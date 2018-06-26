@@ -7,7 +7,8 @@
     "test": "jest",
     "test:watch": "npm run test -- --watch",
     "build": "babel src --out-dir lib --copy-files",
-    "build:watch": "npm run build -- --watch"
+    "build:watch": "npm run build -- --watch",
+    "prepublishOnly": "npm run build && npm run test"
   },
   "author": "Guylian Cox <guyliancox@gmail.com>",
   "license": "MIT",
