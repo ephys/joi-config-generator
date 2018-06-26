@@ -3,7 +3,7 @@
 import Joi from 'joi';
 import chalk from 'chalk';
 import { setValue } from './util';
-import ConfigFinderEnv from './ConfigFinderEnv';
+import ConfigFinderEnv, { type CfEnvOptions } from './ConfigFinderEnv';
 import ConfigFinderFile, { type CfFileOptions } from './ConfigFinderFile';
 import ConfigFinderPrompt from './ConfigFinderPrompt';
 
@@ -18,6 +18,7 @@ export type Options = {
   allowPrompt?: boolean,
 
   file?: CfFileOptions,
+  env?: CfEnvOptions,
 };
 
 /*
@@ -42,7 +43,7 @@ export default async function buildConfig(opts: Options) {
 
   const configFinders = [];
   if (opts.allowEnv) {
-    configFinders.push(new ConfigFinderEnv());
+    configFinders.push(new ConfigFinderEnv(opts.env, opts.debug));
   }
 
   let inputtedValues;

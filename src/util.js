@@ -64,15 +64,6 @@ export function flattenKeys(obj, prefix = '') {
   return flatObj;
 }
 
-export function findEnvValue(key) {
-
-  const envKey = pathToEnvName(key);
-
-  if (process.env[envKey]) {
-    return process.env[envKey];
-  }
-}
-
 export function findConfigValue({ config, format, key }) {
 
   if (format === 'json') {
