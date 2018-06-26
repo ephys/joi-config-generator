@@ -2,7 +2,7 @@
 
 import Joi from 'joi';
 import chalk from 'chalk';
-import { findConfigValue, readConfig, writeConfig } from './util';
+import { findConfigValue, pathToEnvName, readConfig, writeConfig } from './util';
 import { JOI_CONFIG } from './index';
 
 export type CfFileOptions = {
@@ -16,12 +16,24 @@ export type CfFileOptions = {
 export default class ConfigFinderFile {
 
   constructor(options: CfFileOptions) {
-    this._options = options;
+
+    const format = options.format || 'env';
+    this._options = {
+      format,
+      path: options.path || (format === 'env' ? `${process.cwd()}/.env` : `${process.cwd()}/.config.json`),
+    };
+
     this.inputtedValues = {};
   }
 
   async init() {
     this._config = await readConfig(this._options);
+  }
+
+  getInstructionsForField(key) {
+    const stringifiedKey = this._options.format === 'env' ? pathToEnvName(key) : key.join('.');
+
+    return `Add the key ${chalk.magenta(stringifiedKey)} to your configuration file ${chalk.blue(this._options.path)} and verify its value.`;
   }
 
   find({ schemaPart, key }) {

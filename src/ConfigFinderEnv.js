@@ -2,10 +2,16 @@
 
 import Joi from 'joi';
 import chalk from 'chalk';
-import { findEnvValue } from './util';
+import { findEnvValue, pathToEnvName } from './util';
 import { JOI_CONFIG } from './index';
 
 export default class configFinderEnv {
+
+  getInstructionsForField(key) {
+    const name = pathToEnvName(key);
+
+    return `Provide (or verify) the environment variable named ${chalk.magenta(name)}`;
+  }
 
   find({ schemaPart, key }) {
     const envValue = findEnvValue(key);

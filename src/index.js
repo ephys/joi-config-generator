@@ -1,6 +1,7 @@
 // @flow
 
 import Joi from 'joi';
+import chalk from 'chalk';
 import { setValue } from './util';
 import ConfigFinderEnv from './ConfigFinderEnv';
 import ConfigFinderFile, { type CfFileOptions } from './ConfigFinderFile';
@@ -89,6 +90,7 @@ export default async function buildConfig(opts: Options) {
       continue;
     }
 
+    let newValue;
     for (const configFinder of configFinders) {
       // eslint-disable-next-line no-await-in-loop
       const value = await configFinder.find({
@@ -96,12 +98,28 @@ export default async function buildConfig(opts: Options) {
         schemaPart: rejectingSchemaPart,
       });
 
-      if (value === void 0) {
-        continue;
+      if (value !== void 0) {
+        newValue = value;
+        break;
+      }
+    }
+
+    if (newValue !== void 0) {
+      setValue(newConfig, keyPath, newValue);
+    } else {
+      const availableOptions = [];
+
+      for (const configFinder of configFinders) {
+        availableOptions.push(`-> ${configFinder.getInstructionsForField(keyPath)}`);
       }
 
-      setValue(newConfig, keyPath, value);
-      break;
+      const helpMsg = availableOptions.length > 0
+        ? `How to provide this configuration option:\n${availableOptions.join('\n')}`
+        : 'All configuration sources have been disabled. Please check your code related to building your configuration.';
+
+      throw new Error(
+        `Could not find valid value for configuration option ${chalk.magenta(keyPath.join('.'))}.\n\n${helpMsg}`
+      );
     }
   }
 

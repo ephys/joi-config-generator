@@ -4,15 +4,7 @@ import * as dotenv from 'dotenv-parser-serializer';
 import fs from 'mz/fs';
 import constantCase from 'constant-case/constant-case';
 
-export async function readConfig({ path, format = 'env' }) {
-
-  if (!path) {
-    if (format === 'env') {
-      path = `${process.cwd()}/.env`;
-    } else {
-      path = `${process.cwd()}/.config.json`;
-    }
-  }
+export async function readConfig({ path, format }) {
 
   let contents;
   try {
