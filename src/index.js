@@ -34,7 +34,7 @@ export const JOI_CONFIG = {
 export default async function buildConfig(opts: Options) {
 
   const schema = opts.schema;
-  const newConfig = {};
+  let newConfig = {};
 
   const configFinders = [];
   if (opts.allowEnv) {
@@ -67,6 +67,7 @@ export default async function buildConfig(opts: Options) {
   while (true) {
     const validationResults = Joi.validate(newConfig, schema, JOI_CONFIG);
     if (!validationResults.error) {
+      newConfig = validationResults.value;
       break;
     }
 
