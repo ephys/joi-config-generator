@@ -2,6 +2,7 @@
 
 import * as dotenv from 'dotenv-parser-serializer';
 import fs from 'mz/fs';
+import fsExtra from 'fs-extra';
 import constantCase from 'constant-case/constant-case';
 
 export async function readConfig({ path, format }) {
@@ -29,7 +30,9 @@ export async function readConfig({ path, format }) {
   }
 }
 
-export function writeConfig(newConfig, { path, format }) {
+export async function writeConfig(newConfig, { path, format }) {
+
+  await fs.ensureFile(path);
 
   if (format === 'env') {
     const stringified = dotenv.serialize(flattenKeys(newConfig));
