@@ -1,6 +1,6 @@
 {
   "name": "joi-config-generator",
-  "version": "1.0.0-pre.5",
+  "version": "1.0.0-pre.6",
   "description": "Generates and validates JSON/dotenv configuration files using a JOI schema.",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test:watch": "npm run test -- --watch",
     "build": "babel src --out-dir lib --copy-files",
     "build:watch": "npm run build -- --watch",
-    "prepublishOnly": "npm run build && npm run test"
+    "prepublishOnly": "npm run build"
   },
   "author": "Guylian Cox <guyliancox@gmail.com>",
   "license": "MIT",
