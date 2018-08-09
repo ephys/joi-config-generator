@@ -32,7 +32,7 @@ export async function readConfig({ path, format }) {
 
 export async function writeConfig(newConfig, { path, format }) {
 
-  await fs.ensureFile(path);
+  await fsExtra.ensureFile(path);
 
   if (format === 'env') {
     const stringified = dotenv.serialize(flattenKeys(newConfig));
