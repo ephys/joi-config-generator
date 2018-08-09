@@ -1,6 +1,6 @@
 {
   "name": "joi-config-generator",
-  "version": "1.0.0-pre.4",
+  "version": "1.0.0-pre.5",
   "description": "Generates and validates JSON/dotenv configuration files using a JOI schema.",
   "main": "lib/index.js",
   "scripts": {
