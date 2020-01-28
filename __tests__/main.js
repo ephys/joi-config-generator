@@ -1,7 +1,7 @@
 // @flow
 
 import path from 'path';
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 import buildConfig from '../src';
 
 const dialects = ['mariadb', 'mysql', 'postgres', 'sqlite', 'mssql'];
@@ -26,7 +26,7 @@ const schema = Joi.object().keys({
     options: Joi.object().keys({
       dialect: Joi.string()
         .trim()
-        .valid(dialects)
+        .valid(...dialects)
         .default('postgres'),
       host: Joi.string().trim().default('localhost'),
       port: Joi.number().port().default(5432),
@@ -37,10 +37,12 @@ const schema = Joi.object().keys({
 describe('json-config-generator', () => {
   test('main', async () => {
     const result = await buildConfig({
-      // file: `${__dirname}/../app/config.json`,
-      file: `${__dirname}/.env`,
       schema,
-      format: 'env',
+      allowFile: true,
+      file: {
+        path: `${__dirname}/.env`,
+        format: 'env',
+      },
     });
 
     console.log(result);

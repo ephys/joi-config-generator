@@ -1,6 +1,6 @@
 {
   "name": "joi-config-generator",
-  "version": "1.0.0-pre.6",
+  "version": "1.0.1",
   "description": "Generates and validates JSON/dotenv configuration files using a JOI schema.",
   "main": "lib/index.js",
   "scripts": {
@@ -10,29 +10,31 @@
     "build:watch": "npm run build -- --watch",
     "prepublishOnly": "npm run build"
   },
-  "author": "Guylian Cox <guyliancox@gmail.com>",
+  "author": "Guylian Cox <hello@guylian.me>",
   "license": "MIT",
   "engines": {
     "node": ">=8",
     "npm": ">=5"
   },
+  "peerDependencies": {
+    "@hapi/joi": "^17.1.0"
+  },
   "devDependencies": {
-    "@foobarhq/eslint-config": "^1.2.0",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "eslint": "^3.19.0",
-    "flow-bin": "^0.74.0",
-    "jest": "^20.0.4"
+    "@babel/cli": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-flow": "^7.8.3",
+    "@foobarhq/eslint-config": "^7.0.1",
+    "@hapi/joi": "^17.1.0",
+    "eslint": "^6.8.0",
+    "flow-bin": "^0.117.0",
+    "jest": "^25.1.0"
   },
   "dependencies": {
-    "chalk": "^1.1.3",
-    "constant-case": "^2.0.0",
+    "chalk": "^3.0.0",
+    "constant-case": "^3.0.3",
     "dotenv-parser-serializer": "^1.0.1",
-    "fs-extra": "^7.0.0",
-    "inquirer": "^6.0.0",
-    "joi": "^13.4.0",
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.4",
     "mz": "^2.7.0"
   },
   "repository": {

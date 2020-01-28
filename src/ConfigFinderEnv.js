@@ -1,9 +1,8 @@
 // @flow
 
-import Joi from 'joi';
 import chalk from 'chalk';
-import { findEnvValue, pathToEnvName } from './util';
-import { JOI_CONFIG } from './index';
+import { pathToEnvName } from './util';
+import { JOI_CONFIG } from '.';
 
 export type CfEnvOptions = {
   aliasEnvValues?: boolean,
@@ -47,7 +46,7 @@ export default class configFinderEnv {
       }
     }
 
-    const configValueValidationResults = Joi.validate(envValue, schemaPart, JOI_CONFIG);
+    const configValueValidationResults = schemaPart.validate(envValue, JOI_CONFIG);
     if (configValueValidationResults.error != null) {
       console.warn(`${chalk.yellow('!')} [Config] Found ENV value for key ${chalk.magenta(key.join('.'))} in ENV but it is not valid (${chalk.cyan(JSON.stringify(envValue))})`);
       console.warn(chalk.yellow('>> ') + configValueValidationResults.error.details[0].message);

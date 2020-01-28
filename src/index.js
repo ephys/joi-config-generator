@@ -1,6 +1,5 @@
 // @flow
 
-import Joi from 'joi';
 import chalk from 'chalk';
 import { setValue } from './util';
 import ConfigFinderEnv, { type CfEnvOptions } from './ConfigFinderEnv';
@@ -64,8 +63,9 @@ export default async function buildConfig(opts: Options) {
 
   await Promise.all(initPromises);
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
-    const validationResults = Joi.validate(newConfig, schema, JOI_CONFIG);
+    const validationResults = schema.validate(newConfig, JOI_CONFIG);
     if (!validationResults.error) {
       newConfig = validationResults.value;
       break;
@@ -76,13 +76,15 @@ export default async function buildConfig(opts: Options) {
 
     const rejectingSchemaPart = getSchemaPart(schema, keyPath);
 
+    const schemaType = rejectingSchemaPart.type;
+
     // create objects automatically, no need for user input here
-    if (rejectingSchemaPart._type === 'object') {
+    if (schemaType === 'object') {
       setValue(newConfig, keyPath, {});
       continue;
     }
 
-    if (rejectingSchemaPart._type === 'array') {
+    if (schemaType === 'array') {
       setValue(newConfig, keyPath, []);
       continue;
     }
@@ -101,6 +103,15 @@ export default async function buildConfig(opts: Options) {
       }
     }
 
+    if (newValue === void 0) {
+      // try getting the default from the schema
+      const defaultResult = rejectingSchemaPart.validate(newValue, { ...JOI_CONFIG, noDefaults: false, presence: 'optional' });
+      if (defaultResult.value && !defaultResult.error) {
+        newValue = defaultResult.value;
+        setValue(inputtedValues, keyPath, newValue);
+      }
+    }
+
     if (newValue !== void 0) {
       setValue(newConfig, keyPath, newValue);
     } else {
@@ -115,7 +126,7 @@ export default async function buildConfig(opts: Options) {
         : 'All configuration sources have been disabled. Please check your code related to building your configuration.';
 
       throw new Error(
-        `Could not find valid value for configuration option ${chalk.magenta(keyPath.join('.'))}.\n\n${helpMsg}`
+        `Could not find valid value for configuration option ${chalk.magenta(keyPath.join('.'))}.\n\n${helpMsg}`,
       );
     }
   }
@@ -137,16 +148,16 @@ function getSchemaPart(schema, path) {
     return schema;
   }
 
-  const children = schema._inner.children;
+  const children = schema._ids._byKey;
 
-  for (const child of children) {
-    if (child.key === path[0]) {
+  for (const [key, subSchema] of children.entries()) {
+    if (key === path[0]) {
       const newPath = Array.from(path);
       newPath.shift();
 
-      return getSchemaPart(child.schema, newPath);
+      return getSchemaPart(subSchema.schema, newPath);
     }
   }
 
-  throw new Error('Could not find child matching requested key');
+  throw new Error(`Could not find child matching requested key: ${path.join(', ')}`);
 }

@@ -1,9 +1,8 @@
 // @flow
 
-import Joi from 'joi';
 import chalk from 'chalk';
 import { findConfigValue, pathToEnvName, readConfig, writeConfig } from './util';
-import { JOI_CONFIG } from './index';
+import { JOI_CONFIG } from '.';
 
 export type CfFileOptions = {
   /** The type of configuration file, "env" or "json" */
@@ -47,7 +46,7 @@ export default class ConfigFinderFile {
       return void 0;
     }
 
-    const configValueValidationResults = Joi.validate(configValue, schemaPart, JOI_CONFIG);
+    const configValueValidationResults = schemaPart.validate(configValue, JOI_CONFIG);
     if (configValueValidationResults.error != null) {
       console.warn(`${chalk.yellow('!')} [Config] Found value for key ${chalk.magenta(key.join('.'))} in Config File but it is not valid (${chalk.cyan(JSON.stringify(configValue))})`);
       console.warn(chalk.yellow('>> ') + configValueValidationResults.error.details[0].message);
@@ -56,6 +55,10 @@ export default class ConfigFinderFile {
     }
 
     return configValue;
+  }
+
+  persistValue(key: string[], value: any) {
+
   }
 
   async finalize() {

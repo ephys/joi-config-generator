@@ -1,10 +1,9 @@
 // @flow
 
-import Joi from 'joi';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { setValue } from './util';
-import { JOI_CONFIG } from './index';
+import { JOI_CONFIG } from '.';
 
 export default class configFinderPrompt {
 
@@ -33,7 +32,7 @@ export default class configFinderPrompt {
       choices: validValues,
 
       validate(input) {
-        const subValidationResults = Joi.validate(input, schemaPart, JOI_CONFIG);
+        const subValidationResults = schemaPart.validate(input, JOI_CONFIG);
 
         if (!subValidationResults.error) {
           return true;
