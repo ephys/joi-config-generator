@@ -108,7 +108,10 @@ export default async function buildConfig(opts: Options) {
       const defaultResult = rejectingSchemaPart.validate(newValue, { ...JOI_CONFIG, noDefaults: false, presence: 'optional' });
       if (defaultResult.value && !defaultResult.error) {
         newValue = defaultResult.value;
-        setValue(inputtedValues, keyPath, newValue);
+
+        if (inputtedValues) {
+          setValue(inputtedValues, keyPath, newValue);
+        }
       }
     }
 
