@@ -1,15 +1,15 @@
 // @flow
 
+import { promises as fs } from 'fs';
+import Path from 'path';
 import * as dotenv from 'dotenv-parser-serializer';
-import fs from 'mz/fs';
-import fsExtra from 'fs-extra';
 import { constantCase } from 'constant-case';
 
 export async function readConfig({ path, format }) {
 
   let contents;
   try {
-    contents = (await fs.readFile(path)).toString();
+    contents = await fs.readFile(path, 'utf-8');
   } catch (e) {
     if (e.code === 'ENOENT') {
       return {};
@@ -32,7 +32,7 @@ export async function readConfig({ path, format }) {
 
 export async function writeConfig(newConfig, { path, format }) {
 
-  await fsExtra.ensureFile(path);
+  await fs.mkdir(Path.dirname(path), { recursive: true });
 
   if (format === 'env') {
     const stringified = dotenv.serialize(flattenKeys(newConfig));
