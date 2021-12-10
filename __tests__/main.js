@@ -1,7 +1,7 @@
 // @flow
 
 import path from 'path';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import buildConfig from '../src';
 
 const dialects = ['mariadb', 'mysql', 'postgres', 'sqlite', 'mssql'];

@@ -1,6 +1,6 @@
 {
   "name": "joi-config-generator",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Generates and validates JSON/dotenv configuration files using a joi schema.",
   "main": "lib/index.js",
   "scripts": {
@@ -10,24 +10,24 @@
     "build:watch": "npm run build -- --watch",
     "prepublishOnly": "npm run build"
   },
-  "author": "Guylian Cox <hello@guylian.me>",
+  "author": "Zoé Cox <zoe@ephys.dev>",
   "license": "MIT",
   "engines": {
-    "node": ">=10",
+    "node": ">=12",
     "npm": ">=6.11.3"
   },
   "peerDependencies": {
-    "@hapi/joi": "^17.1.0"
+    "joi": "^17.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/preset-env": "^7.10.1",
     "@babel/preset-flow": "^7.10.1",
     "@foobarhq/eslint-config": "^7.0.1",
-    "@hapi/joi": "^17.1.0",
     "eslint": "^6.8.0",
     "flow-bin": "^0.125.1",
-    "jest": "^25.1.0"
+    "jest": "^25.1.0",
+    "joi": "^17.5.0"
   },
   "dependencies": {
     "chalk": "^3.0.0",
